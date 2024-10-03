@@ -13,7 +13,9 @@ import lombok.experimental.FieldDefaults;
 public enum SuccessCode
 {
     REGISTER_SUCCESSFULLY("Đăng ký thành công"),
-    LOGIN_SUCCESSFULLY("Đăng nhập thành công")
+    LOGIN_SUCCESSFULLY("Đăng nhập thành công"),
+    EMAIL_SENT_SUCCESSFULLY("Mã xác thực đã được gửi đến email của bạn"),
+    UPDATE_SUCCESSFULLY("Cập nhật thông tin thành công"),
     ;
 
     String message;

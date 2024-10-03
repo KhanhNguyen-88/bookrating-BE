@@ -1,4 +1,4 @@
-package com.buihuuduy.book_rating.DTO.response;
+package com.buihuuduy.book_rating.DTO.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,9 +8,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthenticationResponse
+public class IntrospectRequest
 {
-    boolean isAuthenticated;
-
     String token;
 }

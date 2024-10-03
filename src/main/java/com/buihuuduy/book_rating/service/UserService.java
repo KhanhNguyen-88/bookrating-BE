@@ -6,8 +6,6 @@ import com.buihuuduy.book_rating.exception.CustomException;
 import com.buihuuduy.book_rating.exception.ErrorCode;
 import com.buihuuduy.book_rating.mapper.UserMapper;
 import com.buihuuduy.book_rating.repository.UserRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,30 +19,10 @@ public class UserService
         this.userMapper = userMapper;
     }
 
-    public void registerUser(UserEntityRequest userSignInRequest)
+    public void updateUser(int userId, UserEntityRequest userEntityRequest)
     {
-        if(userSignInRequest.getUsername().isEmpty() || userRepository.existsByUsername(userSignInRequest.getUsername())) {
-            throw new CustomException(ErrorCode.USERNAME_ALREADY_EXIST);
-        }
-        if(userSignInRequest.getEmail().isEmpty() || userRepository.existsByUserEmail(userSignInRequest.getEmail())) {
-            throw new CustomException(ErrorCode.EMAIL_ALREADY_EXIST);
-        }
-
-        UserEntity userEntity = userMapper.toUser(userSignInRequest);
-
-        // Encode password
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        userEntity.setPassword(passwordEncoder.encode(userSignInRequest.getPassword()));
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        userMapper.updateUser(userEntity, userEntityRequest);
         userRepository.save(userEntity);
-    }
-
-    public boolean canAuthenticated(UserEntityRequest userLoginRequest)
-    {
-        var userEntity = userRepository.findByUsername(userLoginRequest.getUsername());
-        if(userEntity == null) {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        }
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        return passwordEncoder.matches(userLoginRequest.getPassword(), userEntity.getPassword());
     }
 }

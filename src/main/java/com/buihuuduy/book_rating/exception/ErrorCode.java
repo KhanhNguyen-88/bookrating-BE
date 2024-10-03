@@ -20,8 +20,8 @@ public enum ErrorCode
     FULL_NAME_INVALID(400, "Họ tên phải chứa ký tự"),
     LOGIN_UNSUCCESSFULLY(401, "Đăng nhập không thành công"),
     UNAUTHORIZED(403, "Bạn không có quyền truy cập tài nguyên này"),
-    EMAIL_INVALID(400, "Email phải có định dạng hợp lệ")
-
+    EMAIL_INVALID(400, "Email phải có định dạng hợp lệ"),
+    VERIFICATION_CODE_INVALID(400, "Mã xác minh không hợp lệ")
     ;
 
     int code;
