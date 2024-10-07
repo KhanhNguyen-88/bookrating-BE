@@ -19,7 +19,7 @@ public class UserService
         this.userMapper = userMapper;
     }
 
-    public void updateUser(int userId, UserEntityRequest userEntityRequest)
+    public void updateUser(Integer userId, UserEntityRequest userEntityRequest)
     {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         userMapper.updateUser(userEntity, userEntityRequest);

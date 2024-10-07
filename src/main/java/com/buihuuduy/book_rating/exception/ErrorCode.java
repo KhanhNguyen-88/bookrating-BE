@@ -21,10 +21,12 @@ public enum ErrorCode
     LOGIN_UNSUCCESSFULLY(401, "Đăng nhập không thành công"),
     UNAUTHORIZED(403, "Bạn không có quyền truy cập tài nguyên này"),
     EMAIL_INVALID(400, "Email phải có định dạng hợp lệ"),
-    VERIFICATION_CODE_INVALID(400, "Mã xác minh không hợp lệ")
+    VERIFICATION_CODE_INVALID(400, "Mã xác minh không hợp lệ"),
+    CATEGORY_NOT_FOUND(404, "Không tìm thấy danh mục"),
+    BOOK_NOT_FOUND(404, "Không tìm thấy sách")
     ;
 
-    int code;
+    Integer code;
 
     String message;
 }

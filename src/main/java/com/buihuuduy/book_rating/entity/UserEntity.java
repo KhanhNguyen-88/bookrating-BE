@@ -16,7 +16,7 @@ public class UserEntity extends AuditingEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    Integer id;
 
     @Column(name = "username")
     String username;
@@ -44,7 +44,4 @@ public class UserEntity extends AuditingEntity
 
     @Column(name = "user_link")
     String userLink;
-
-    @Column(name = "is_author")
-    boolean isAuthor;
 }
