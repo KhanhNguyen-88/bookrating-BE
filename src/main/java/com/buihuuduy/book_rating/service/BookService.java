@@ -2,11 +2,14 @@ package com.buihuuduy.book_rating.service;
 
 import com.buihuuduy.book_rating.DTO.PageFilterInput;
 import com.buihuuduy.book_rating.DTO.request.ExplorePageFilter;
-import com.buihuuduy.book_rating.DTO.response.BookResponse;
+import com.buihuuduy.book_rating.DTO.response.BookDetailResponse;
+import com.buihuuduy.book_rating.DTO.response.BookExploreResponse;
+import com.buihuuduy.book_rating.DTO.response.FeedbackResponse;
 import com.buihuuduy.book_rating.entity.BookCategoryEntity;
 import com.buihuuduy.book_rating.entity.BookEntity;
 import com.buihuuduy.book_rating.exception.CustomException;
 import com.buihuuduy.book_rating.exception.ErrorCode;
+import com.buihuuduy.book_rating.mapper.BookMapper;
 import com.buihuuduy.book_rating.repository.BookCategoryRepository;
 import com.buihuuduy.book_rating.repository.BookRepository;
 import jakarta.persistence.EntityManager;
@@ -26,17 +29,19 @@ public class BookService
 {
     private final BookCategoryRepository bookCategoryRepository;
     private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public BookService(BookCategoryRepository bookCategoryRepository, BookRepository bookRepository) {
+    public BookService(BookCategoryRepository bookCategoryRepository, BookRepository bookRepository, BookMapper bookMapper) {
         this.bookCategoryRepository = bookCategoryRepository;
         this.bookRepository = bookRepository;
+        this.bookMapper = bookMapper;
     }
 
     @Transactional
-    public Page<BookResponse> getBooksInExplorePage(PageFilterInput<ExplorePageFilter> input, Pageable pageable)
+    public Page<BookExploreResponse> getBooksInExplorePage(PageFilterInput<ExplorePageFilter> input, Pageable pageable)
     {
         StringBuilder sql = new StringBuilder();
 
@@ -96,17 +101,17 @@ public class BookService
             results = query.getResultList(); // No pagination
         }
 
-        List<BookResponse> bookResponseList = new ArrayList<>();
+        List<BookExploreResponse> bookResponseList = new ArrayList<>();
         for(Object[] result : results)
         {
-            BookResponse bookResponse = getBookResponse(result);
+            BookExploreResponse bookResponse = getBookResponse(result);
             bookResponseList.add(bookResponse);
         }
         return new PageImpl<>(bookResponseList, pageable, totalRows);
     }
 
-    private static BookResponse getBookResponse(Object[] result) {
-        BookResponse bookResponse = new BookResponse();
+    private static BookExploreResponse getBookResponse(Object[] result) {
+        BookExploreResponse bookResponse = new BookExploreResponse();
         bookResponse.setBookName((String) result[0]);
         bookResponse.setBookDescription((String) result[1]);
         bookResponse.setBookImage((String) result[2]);
@@ -118,7 +123,6 @@ public class BookService
         bookResponse.setCategoryName((String) result[8]);
         return bookResponse;
     }
-
 
     public List<BookEntity> getBooksInExplorePage1(Integer categoryId)
     {
@@ -134,5 +138,44 @@ public class BookService
             books.add(bookEntity);
         }
         return books;
+    }
+
+    public BookDetailResponse getBookDetailById(Integer bookId)
+    {
+        BookEntity bookEntity = bookRepository.findById(bookId).orElseThrow(
+                () -> new CustomException(ErrorCode.BOOK_NOT_FOUND)
+        );
+
+        BookDetailResponse bookDetailResponse = bookMapper.toBookDetailResponse(bookEntity);
+
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT ")
+                .append("   u.username, u.user_image, ")
+                .append("   fb.comment, fb.rating, ")
+                .append("   fb.updated_at ")
+                .append("FROM book_rating_db.feedback fb ")
+                .append("LEFT JOIN book_rating_db.user u ON fb.user_id = u.id ");
+
+        Query query = entityManager.createNativeQuery(sql.toString());
+
+        List<Object[]> results = query.getResultList();
+        List<FeedbackResponse> feedbackResponseList = new ArrayList<>();
+
+        for(Object[] result : results)
+        {
+            FeedbackResponse feedbackResponse = new FeedbackResponse();
+
+            feedbackResponse.setUserName((String) result[0]);
+            feedbackResponse.setUserImage((String) result[1]);
+            feedbackResponse.setComment((String) result[2]);
+            feedbackResponse.setRating((Integer) result[3]);
+            feedbackResponse.setCreatedAt((LocalDate) result[4]);
+
+            feedbackResponseList.add(feedbackResponse);
+        }
+
+        bookDetailResponse.setFeedbackResponseList(feedbackResponseList);
+        return bookDetailResponse;
     }
 }

@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FeedbackEntity
+public class FeedbackEntity extends AuditingEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

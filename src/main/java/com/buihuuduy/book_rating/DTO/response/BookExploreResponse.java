@@ -1,7 +1,5 @@
 package com.buihuuduy.book_rating.DTO.response;
 
-import com.buihuuduy.book_rating.entity.AuditingEntity;
-import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +10,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BookResponse extends AuditingEntity
+public class BookExploreResponse
 {
     String bookName;
 

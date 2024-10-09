@@ -18,8 +18,8 @@ pipeline {
         stage('Packing image') {
             steps {
                 withDockerRegistry(credentialsId: 'dockerhub', url: '') {
-                   sh 'docker build -t duy129/springboot .'
-                   sh 'docker push duy129/springboot'
+                   bat 'docker build -t duy129/springboot .'
+                   bat 'docker push duy129/springboot'
                 }
             }
         }

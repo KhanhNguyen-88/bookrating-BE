@@ -24,6 +24,9 @@ public class UserEntity extends AuditingEntity
     @Column(name = "password")
     String password;
 
+    @Column(name = "user_image")
+    String userImage;
+
     @Column(name = "full_name")
     String fullName;
 
