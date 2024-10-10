@@ -15,7 +15,7 @@ public class MailController
         this.mailService = mailService;
     }
 
-    @PostMapping("/send-code")
+    @GetMapping("/send-code")
     public ApiResponse<?> sendVerificationCode(@RequestParam String email)
     {
         mailService.sendMail(email);
@@ -25,7 +25,7 @@ public class MailController
         return apiResponse;
     }
 
-    @PostMapping("/verify-code")
+    @GetMapping("/verify-code")
     public ApiResponse<?> verifyCode(@RequestParam String email, @RequestParam String code)
     {
         mailService.verifyCode(email, code);

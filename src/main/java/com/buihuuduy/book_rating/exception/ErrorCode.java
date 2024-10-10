@@ -23,7 +23,8 @@ public enum ErrorCode
     EMAIL_INVALID(400, "Email phải có định dạng hợp lệ"),
     VERIFICATION_CODE_INVALID(400, "Mã xác minh không hợp lệ"),
     CATEGORY_NOT_FOUND(404, "Không tìm thấy danh mục"),
-    BOOK_NOT_FOUND(404, "Không tìm thấy sách")
+    BOOK_NOT_FOUND(404, "Không tìm thấy sách"),
+    JWT_INVALID(400, "JWT không hợp lệ"),
     ;
 
     Integer code;

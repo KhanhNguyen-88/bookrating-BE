@@ -8,10 +8,7 @@ import com.buihuuduy.book_rating.exception.SuccessCode;
 import com.buihuuduy.book_rating.service.AuthService;
 import com.nimbusds.jose.JOSEException;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 
 @RestController
@@ -59,4 +56,15 @@ public class AuthController
         }
         return apiResponse;
     }
+
+//    @GetMapping("/get-current-user")
+//    public ResponseEntity<String> getCurrentUser(@RequestHeader("Authorization") String authorizationHeader) {
+//        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+//            String token = authorizationHeader.substring(7); // Lấy token từ header
+//            String username = authService.getUsernameFromToken(token); // Giải mã token và lấy subject
+//            return ResponseEntity.ok("Current user: " + username);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token not provided");
+//        }
+//    }
 }

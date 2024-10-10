@@ -41,4 +41,13 @@ public class BookController
         apiResponse.setResult(bookService.getBookDetailById(bookId));
         return apiResponse;
     }
+
+    @GetMapping("/get-authors/{input}")
+    public ApiResponse<List<String>> getAuthorsRecommendation(@PathVariable String input)
+    {
+        ApiResponse<List<String>> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setResult(bookService.getAuthorsRecommendation(input));
+        return apiResponse;
+    }
 }

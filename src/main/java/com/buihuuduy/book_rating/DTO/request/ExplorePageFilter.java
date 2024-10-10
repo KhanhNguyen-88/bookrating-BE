@@ -12,4 +12,7 @@ public class ExplorePageFilter
     String bookAuthor;
 
     Integer categoryId;
+
+    // AVG
+    Integer rating;
 }
