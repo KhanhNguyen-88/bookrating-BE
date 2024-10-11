@@ -37,7 +37,7 @@ public class UserEntity extends AuditingEntity
     String userAddress;
 
     @Column(name = "user_gender")
-    boolean userGender;
+    Boolean userGender;
 
     @Column(name = "user_phone")
     String userPhone;

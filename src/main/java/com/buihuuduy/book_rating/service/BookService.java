@@ -2,8 +2,8 @@ package com.buihuuduy.book_rating.service;
 
 import com.buihuuduy.book_rating.DTO.PageFilterInput;
 import com.buihuuduy.book_rating.DTO.request.ExplorePageFilter;
-import com.buihuuduy.book_rating.DTO.response.BookDetailResponse;
-import com.buihuuduy.book_rating.DTO.response.BookExploreResponse;
+import com.buihuuduy.book_rating.DTO.response.BookDetailPageResponse;
+import com.buihuuduy.book_rating.DTO.response.BookResponse;
 import com.buihuuduy.book_rating.DTO.response.FeedbackResponse;
 import com.buihuuduy.book_rating.entity.BookCategoryEntity;
 import com.buihuuduy.book_rating.entity.BookEntity;
@@ -44,11 +44,12 @@ public class BookService
     }
 
     @Transactional
-    public Page<BookExploreResponse> getBooksInExplorePage(PageFilterInput<ExplorePageFilter> input, Pageable pageable)
+    public Page<BookResponse> getBooksInExplorePage(PageFilterInput<ExplorePageFilter> input, Pageable pageable)
     {
         StringBuilder sql = new StringBuilder();
 
         sql.append("SELECT ")
+            .append("   b.id, ")
             .append("   b.book_name, b.book_description, ")
             .append("   b.book_image, b.published_date, ")
             .append("   b.book_format, b.book_sale_link, ")
@@ -70,6 +71,7 @@ public class BookService
         }
 
         sql.append("GROUP BY ")
+            .append("   b.id, ")
             .append("    b.book_name, b.book_description, ")
             .append("    b.book_image, b.published_date, ")
             .append("    b.book_format, b.book_sale_link, ")
@@ -111,26 +113,27 @@ public class BookService
             results = query.getResultList(); // No pagination
         }
 
-        List<BookExploreResponse> bookResponseList = new ArrayList<>();
+        List<BookResponse> bookResponseList = new ArrayList<>();
         for(Object[] result : results)
         {
-            BookExploreResponse bookResponse = getBookResponse(result);
+            BookResponse bookResponse = getBookResponse(result);
             bookResponseList.add(bookResponse);
         }
         return new PageImpl<>(bookResponseList, pageable, totalRows);
     }
 
-    private static BookExploreResponse getBookResponse(Object[] result) {
-        BookExploreResponse bookResponse = new BookExploreResponse();
-        bookResponse.setBookName((String) result[0]);
-        bookResponse.setBookDescription((String) result[1]);
-        bookResponse.setBookImage((String) result[2]);
-        bookResponse.setPublishedDate((LocalDate) result[3]);
-        bookResponse.setBookFormat((String) result[4]);
-        bookResponse.setBookSaleLink((String) result[5]);
-        bookResponse.setLanguage((String) result[6]);
-        bookResponse.setBookAuthor((String) result[7]);
-        bookResponse.setCategoryName((String) result[8]);
+    private static BookResponse getBookResponse(Object[] result) {
+        BookResponse bookResponse = new BookResponse();
+        bookResponse.setId((Integer) result[0]);
+        bookResponse.setBookName((String) result[1]);
+        bookResponse.setBookDescription((String) result[2]);
+        bookResponse.setBookImage((String) result[3]);
+        bookResponse.setPublishedDate((LocalDate) result[4]);
+        bookResponse.setBookFormat((String) result[5]);
+        bookResponse.setBookSaleLink((String) result[6]);
+        bookResponse.setLanguage((String) result[7]);
+        bookResponse.setBookAuthor((String) result[8]);
+        bookResponse.setCategoryName((String) result[9]);
         return bookResponse;
     }
 
@@ -150,17 +153,21 @@ public class BookService
         return books;
     }
 
-    public BookDetailResponse getBookDetailById(Integer bookId)
+    public BookDetailPageResponse getBookDetailById(Integer bookId)
     {
         BookEntity bookEntity = bookRepository.findById(bookId).orElseThrow(
                 () -> new CustomException(ErrorCode.BOOK_NOT_FOUND)
         );
 
-        BookDetailResponse bookDetailResponse = bookMapper.toBookDetailResponse(bookEntity);
+        BookDetailPageResponse bookDetailPageResponse = new BookDetailPageResponse();
+
+        BookResponse bookResponse = bookMapper.toBookResponse(bookEntity);
+        bookDetailPageResponse.setBookResponse(bookResponse);
 
         StringBuilder sql = new StringBuilder();
 
         sql.append("SELECT ")
+                .append("   fb.user_id, ")
                 .append("   u.username, u.user_image, ")
                 .append("   fb.comment, fb.rating, ")
                 .append("   fb.updated_at ")
@@ -176,17 +183,18 @@ public class BookService
         {
             FeedbackResponse feedbackResponse = new FeedbackResponse();
 
-            feedbackResponse.setUserName((String) result[0]);
-            feedbackResponse.setUserImage((String) result[1]);
-            feedbackResponse.setComment((String) result[2]);
-            feedbackResponse.setRating((Integer) result[3]);
-            feedbackResponse.setCreatedAt((LocalDate) result[4]);
+            feedbackResponse.setUserId((Integer) result[0]);
+            feedbackResponse.setUserName((String) result[1]);
+            feedbackResponse.setUserImage((String) result[2]);
+            feedbackResponse.setComment((String) result[3]);
+            feedbackResponse.setRating((Integer) result[4]);
+            feedbackResponse.setCreatedAt((LocalDate) result[5]);
 
             feedbackResponseList.add(feedbackResponse);
         }
 
-        bookDetailResponse.setFeedbackResponseList(feedbackResponseList);
-        return bookDetailResponse;
+        bookDetailPageResponse.setFeedbackResponseList(feedbackResponseList);
+        return bookDetailPageResponse;
     }
 
     public List<String> getAuthorsRecommendation(String input)
@@ -195,5 +203,16 @@ public class BookService
         log.info("Input {}", input);
         authors = bookRepository.getAuthorByTitle(input.trim());
         return authors;
+    }
+
+    public List<BookResponse> getPostedBookByUsername(String username)
+    {
+        List<BookEntity> bookEntities = bookRepository.findByCreatedBy(username);
+        List<BookResponse> bookResponseList = new ArrayList<>();
+        for(BookEntity bookEntity : bookEntities) {
+            BookResponse bookResponse = bookMapper.toBookResponse(bookEntity);
+            bookResponseList.add(bookResponse);
+        }
+        return bookResponseList;
     }
 }

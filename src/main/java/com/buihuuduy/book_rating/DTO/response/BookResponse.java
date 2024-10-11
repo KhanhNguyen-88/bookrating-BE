@@ -4,14 +4,16 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BookDetailResponse
+public class BookResponse
 {
+    Integer id;
+
     String bookName;
 
     String bookDescription;
@@ -29,6 +31,4 @@ public class BookDetailResponse
     String bookAuthor;
 
     String categoryName;
-
-    List<FeedbackResponse> feedbackResponseList;
 }

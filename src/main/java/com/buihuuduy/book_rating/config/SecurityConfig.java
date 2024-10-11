@@ -1,10 +1,8 @@
 package com.buihuuduy.book_rating.config;
 
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,25 +19,10 @@ public class SecurityConfig
     @Value("${jwt.signerKey}")
     private String signerKey;
 
-    private final String[] PUBLIC_URLS =
-    {
-        "/api/user/register",
-        "/api/user/login",
-
-        "/api/book/get-explore-page",
-        "/api/book/{bookId}",
-        "/api/book/get-authors/{input}",
-
-        "/api/mail/send-code",
-        "/api/mail/verify-code",
-
-        "/api/category/get-all"
-    };
-
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, ParameterNamesModule parameterNamesModule) throws Exception
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception
     {
-        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers (PUBLIC_URLS).permitAll()
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(Constant.PUBLIC_URLS).permitAll()
                 .anyRequest().authenticated()
         );
 
@@ -48,7 +31,7 @@ public class SecurityConfig
         );
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
-
+        httpSecurity.cors(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
     }
 
