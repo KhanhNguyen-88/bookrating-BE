@@ -7,22 +7,19 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table(name = "category")
+@Table(name = "favorite_book")
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CategoryEntity extends AuditingEntity
+public class FavoriteBookEntity extends AuditingEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(name = "cate_name")
-    String cateName;
+    @Column(name = "book_id")
+    Integer bookId;
 
-    @Column(name = "cate_description")
-    String cateDescription;
-
-    @Column(name = "cate_image")
-    String cateImage;
+    @Column(name = "user_id")
+    Integer userId;
 }

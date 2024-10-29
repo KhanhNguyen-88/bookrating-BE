@@ -6,6 +6,7 @@ import com.buihuuduy.book_rating.DTO.request.UserEntityRequest;
 import com.buihuuduy.book_rating.DTO.response.AuthenticationResponse;
 import com.buihuuduy.book_rating.exception.SuccessCode;
 import com.buihuuduy.book_rating.service.AuthService;
+import com.buihuuduy.book_rating.service.impl.AuthServiceImpl;
 import com.nimbusds.jose.JOSEException;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;

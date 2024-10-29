@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @MappedSuperclass
@@ -22,7 +23,7 @@ public abstract class AuditingEntity
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)
-    private LocalDate createdAt = LocalDate.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @LastModifiedBy
     @Column(name = "updated_by")
@@ -30,5 +31,5 @@ public abstract class AuditingEntity
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    private LocalDate updatedAt = LocalDate.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
 }

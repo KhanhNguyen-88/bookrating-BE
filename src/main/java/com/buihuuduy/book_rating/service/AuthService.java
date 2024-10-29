@@ -3,108 +3,17 @@ package com.buihuuduy.book_rating.service;
 import com.buihuuduy.book_rating.DTO.request.IntrospectRequest;
 import com.buihuuduy.book_rating.DTO.request.UserEntityRequest;
 import com.buihuuduy.book_rating.DTO.response.AuthenticationResponse;
-import com.buihuuduy.book_rating.entity.UserEntity;
-import com.buihuuduy.book_rating.exception.CustomException;
-import com.buihuuduy.book_rating.exception.ErrorCode;
-import com.buihuuduy.book_rating.mapper.UserMapper;
-import com.buihuuduy.book_rating.repository.UserRepository;
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jwt.SignedJWT;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.nimbusds.jose.JOSEException;
 import org.springframework.stereotype.Service;
-import com.nimbusds.jwt.JWTClaimsSet;
+
 import java.text.ParseException;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 
 @Service
-public class AuthService
+public interface AuthService
 {
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    void registerUser(UserEntityRequest userSignInRequest);
 
-    @Value("${jwt.signerKey}")
-    private String signerKey;
+    AuthenticationResponse loginUser(UserEntityRequest userLoginRequest);
 
-    public AuthService(UserRepository userRepository, UserMapper userMapper) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-    }
-
-    public void registerUser(UserEntityRequest userSignInRequest)
-    {
-        if(userSignInRequest.getUsername().isEmpty() || userRepository.existsByUsername(userSignInRequest.getUsername())) {
-            throw new CustomException(ErrorCode.USERNAME_ALREADY_EXIST);
-        }
-        if(userSignInRequest.getEmail().isEmpty() || userRepository.existsByUserEmail(userSignInRequest.getEmail())) {
-            throw new CustomException(ErrorCode.EMAIL_ALREADY_EXIST);
-        }
-
-        UserEntity userEntity = userMapper.toUser(userSignInRequest);
-
-        // Encode password
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        userEntity.setPassword(passwordEncoder.encode(userSignInRequest.getPassword()));
-        userRepository.save(userEntity);
-    }
-
-    public AuthenticationResponse loginUser(UserEntityRequest userLoginRequest)
-    {
-        var userEntity = userRepository.findByUsername(userLoginRequest.getUsername());
-        if(userEntity == null) {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        }
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        boolean isAuthenticated =  passwordEncoder.matches(userLoginRequest.getPassword(), userEntity.getPassword());
-
-        if(!isAuthenticated) {
-            throw new CustomException(ErrorCode.LOGIN_UNSUCCESSFULLY);
-        }
-
-        String token = generateToken(userLoginRequest);
-
-        return AuthenticationResponse.builder().token(token).isAuthenticated(true).build();
-    }
-
-    // Verify token
-    public boolean introspect(IntrospectRequest introspectRequest) throws JOSEException, ParseException
-    {
-        var token = introspectRequest.getToken();
-        JWSVerifier verifier = new MACVerifier(signerKey.getBytes());
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-        var verified = signedJWT.verify(verifier);
-        return (verified && expiryTime.after(new Date()));
-    }
-
-    private String generateToken(UserEntityRequest userRequest) {
-        // Header of JWT
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
-
-        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(userRequest.getUsername())
-                .issuer("buihuuduy.com")
-                .issueTime(new Date())
-                .expirationTime(new Date(Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli()))
-                .claim("customClaim", "Custom Claim")
-                .build();
-
-        // Payload of JWT
-
-        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
-
-        JWSObject jwsObject = new JWSObject(header, payload);
-        try {
-            jwsObject.sign(new MACSigner(signerKey.getBytes()));
-            return jwsObject.serialize();
-        } catch (JOSEException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
+    boolean introspect(IntrospectRequest introspectRequest) throws JOSEException, ParseException;
 }

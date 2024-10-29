@@ -14,6 +14,8 @@ public class Constant
         "/api/book/{bookId}",
         "/api/book/get-authors/{input}",
         "/api/book/get-posted-by-username/{username}",
+        "/api/book/search-common/{text}",
+        "/api/book/get-book-by-userId/1",
 
         "/api/mail/send-code",
         "/api/mail/verify-code",

@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -21,5 +21,5 @@ public class FeedbackResponse
 
     Integer rating;
 
-    LocalDate createdAt;
+    LocalDateTime createdAt;
 }

@@ -3,6 +3,7 @@ package com.buihuuduy.book_rating.controller;
 import com.buihuuduy.book_rating.DTO.ApiResponse;
 import com.buihuuduy.book_rating.exception.SuccessCode;
 import com.buihuuduy.book_rating.service.MailService;
+import com.buihuuduy.book_rating.service.impl.MailServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,6 +32,7 @@ public class MailController
         mailService.verifyCode(email, code);
         ApiResponse<?> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
+        apiResponse.setMessage(SuccessCode.REGISTER_SUCCESSFULLY.getMessage());
         return apiResponse;
     }
 }

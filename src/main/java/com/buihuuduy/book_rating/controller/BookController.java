@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -57,6 +56,24 @@ public class BookController
         ApiResponse<List<BookResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
         apiResponse.setResult(bookService.getPostedBookByUsername(username));
+        return apiResponse;
+    }
+
+    @GetMapping("/search-common/{text}")
+    public ApiResponse<List<BookResponse>> searchBookByText(@PathVariable String text)
+    {
+        ApiResponse<List<BookResponse>> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setResult(bookService.searchBookByText(text));
+        return apiResponse;
+    }
+
+    @GetMapping("/get-book-by-userId/{userId}")
+    public ApiResponse<List<BookResponse>> getFavoriteBookByUserId(@PathVariable Integer userId)
+    {
+        ApiResponse<List<BookResponse>> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setResult(bookService.getFavoriteBookByUserId(userId));
         return apiResponse;
     }
 }
