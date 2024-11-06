@@ -20,9 +20,11 @@ public class Constant
         "/api/mail/send-code",
         "/api/mail/verify-code",
 
-         "/api/category/get-all",
+        "/api/category/get-all",
 
-         "/api/feedback/add",
-         "/api/feedback/stream"
+        "/api/feedback/add",
+        "/api/feedback/stream",
+
+            "/ws/**"
     };
 }

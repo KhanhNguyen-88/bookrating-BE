@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Post and Comment</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script>
+        var stompClient = null;
+
+        function connect() {
+            var socket = new SockJS('http://localhost:8081/ws');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({
+                Authorization: 'Bearer ' + "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJidWlodXVkdXkuY29tIiwic3ViIjoiaHV1ZHV5IiwiZXhwIjoxNzMwODA0MjUxLCJjdXN0b21DbGFpbSI6IkN1c3RvbSBDbGFpbSIsImlhdCI6MTczMDcxNzg1MX0.dhQo2KJpFcN8EuMRSoH1a4CzQczKIV9lqsO3MKNE2AJ6O_iH5OSECn03Ii0xQe4rGM97WVqEA2-E7yj9gmV0VQ"
+            }, function (frame) {
+                console.log('Connected: ' + frame);
+
+                // Subscribe to the posts topic
+                stompClient.subscribe('/topic/posts', function (post) {
+                    showPost(JSON.parse(post.body));
+                });
+
+                // Subscribe to the comments topic
+                stompClient.subscribe('/topic/comments', function (comment) {
+                    showComment(JSON.parse(comment.body));
+                });
+            });
+        }
+
+        function createPost() {
+            var postTitle = document.getElementById("postTitle").value;
+            var postContent = document.getElementById("postContent").value;
+
+            if (postTitle && postContent && stompClient) {
+                var postRequest = {
+                    title: postTitle,
+                    content: postContent
+                };
+                stompClient.send("/app/post.create", {}, JSON.stringify(postRequest));
+                document.getElementById("postTitle").value = '';
+                document.getElementById("postContent").value = '';
+            }
+        }
+
+        function commentOnPost(postId) {
+            var commentContent = document.getElementById("commentContent_" + postId).value;
+
+            if (commentContent && stompClient) {
+                var commentRequest = {
+                    postId: postId,
+                    content: commentContent
+                };
+                stompClient.send("/app/post.comment", {}, JSON.stringify(commentRequest));
+                document.getElementById("commentContent_" + postId).value = '';
+            }
+        }
+
+        function showPost(post) {
+            var postElement = document.createElement('div');
+            postElement.innerHTML = `<h3>${post.title}</h3><p>${post.content}</p><input type="text" id="commentContent_${post.id}" placeholder="Enter comment"/><button onclick="commentOnPost(${post.id})">Comment</button><ul id="comments_${post.id}"></ul>`;
+            document.getElementById('posts').appendChild(postElement);
+        }
+
+        function showComment(comment) {
+            var commentElement = document.createElement('li');
+            commentElement.textContent = comment.content;
+            document.getElementById('comments_' + comment.post.id).appendChild(commentElement);
+        }
+
+        window.onload = function() {
+            connect();
+        };
+    </script>
+</head>
+<body>
+<div>
+    <h2>Create Post</h2>
+    <input type="text" id="postTitle" placeholder="Title"/>
+    <textarea id="postContent" placeholder="Content"></textarea>
+    <button onclick="createPost()">Post</button>
+</div>
+
+<div id="posts"></div>
+
+</body>
+</html>
