@@ -58,7 +58,7 @@ public class BookServiceImpl implements BookService
                 .append("   b.book_format, b.book_sale_link, ")
                 .append("   bl.language_name, b.book_author,  ")
                 .append("   GROUP_CONCAT(c.cate_name ORDER BY c.cate_name SEPARATOR ', ') AS category, ")
-                .append("   CEIL(AVG(fb.rating)) AS average_rating ")
+                .append("   CEIL(AVG(fb.rating)) AS average_rating, COUNT(fb.rating) AS rating_count, b.created_at")
                 .append("FROM book b ")
                 .append("LEFT JOIN book_category bc ON b.id = bc.book_id ")
                 .append("LEFT JOIN book_language bl ON b.language_id = bl.id ")
