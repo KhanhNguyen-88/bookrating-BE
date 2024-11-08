@@ -20,4 +20,9 @@ public class CategoryServiceImpl implements CategoryService
     public List<CategoryEntity> getAllCategories() {
         return categoryRepository.findAll();
     }
+
+    @Override
+    public List<CategoryEntity> getCategoryById(long id) {
+        return categoryRepository.findCategoriesByBookId(id);
+    }
 }

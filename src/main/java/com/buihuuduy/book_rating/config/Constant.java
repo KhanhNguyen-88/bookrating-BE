@@ -21,6 +21,7 @@ public class Constant
         "/api/mail/verify-code",
 
         "/api/category/get-all",
+            "/api/category/get-by-book",
 
         "/api/feedback/add",
         "/api/feedback/stream",
