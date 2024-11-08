@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -22,7 +23,7 @@ public class BookResponse
 
     String bookImage;
 
-    LocalDate publishedDate;
+    Date publishedDate;
 
     String bookFormat;
 
@@ -34,5 +35,10 @@ public class BookResponse
 
     String categoryName;
 
-    
+    Long averageRating;
+
+    Long totalRating;
+
+    Date createdAt;
+
 }

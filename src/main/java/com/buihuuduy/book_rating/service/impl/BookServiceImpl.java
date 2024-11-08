@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -59,7 +60,7 @@ public class BookServiceImpl implements BookService
                 .append("   bl.language_name, b.book_author,  ")
                 .append("   GROUP_CONCAT(c.cate_name ORDER BY c.cate_name SEPARATOR ', ') AS category, ")
                 .append("   CEIL(AVG(fb.rating)) AS average_rating, COUNT(fb.rating) AS rating_count, b.created_at")
-                .append("FROM book b ")
+                .append(" FROM book b ")
                 .append("LEFT JOIN book_category bc ON b.id = bc.book_id ")
                 .append("LEFT JOIN book_language bl ON b.language_id = bl.id ")
                 .append("LEFT JOIN category c ON bc.category_id = c.id ")
@@ -127,16 +128,38 @@ public class BookServiceImpl implements BookService
 
     private static BookResponse getBookResponseExplorePage(Object[] result) {
         BookResponse bookResponse = new BookResponse();
+        System.out.println(result[0]);
         bookResponse.setId((Integer) result[0]);
         bookResponse.setBookName((String) result[1]);
         bookResponse.setBookDescription((String) result[2]);
         bookResponse.setBookImage((String) result[3]);
-        bookResponse.setPublishedDate((LocalDate) result[4]);
+        bookResponse.setPublishedDate((Date) result[4]);
         bookResponse.setBookFormat((String) result[5]);
         bookResponse.setBookSaleLink((String) result[6]);
         bookResponse.setLanguage((String) result[7]);
         bookResponse.setBookAuthor((String) result[8]);
         bookResponse.setCategoryName((String) result[9]);
+        bookResponse.setAverageRating((Long) result[10]);
+        bookResponse.setTotalRating((Long) result[11]);
+        bookResponse.setCreatedAt((Date) result[12]);
+        return bookResponse;
+    }
+    private static BookResponse convertBookResponseDetail(Object[] result) {
+        BookResponse bookResponse = new BookResponse();
+        Object[] bookData = (Object[]) result[0] ;
+        bookResponse.setId((Integer) bookData[0]);
+        bookResponse.setBookName((String) bookData[1]);
+        bookResponse.setBookDescription((String) bookData[2]);
+        bookResponse.setBookImage((String) bookData[3]);
+        bookResponse.setPublishedDate((Date) bookData[4]);
+        bookResponse.setBookFormat((String) bookData[5]);
+        bookResponse.setBookSaleLink((String) bookData[6]);
+        bookResponse.setLanguage((String) bookData[7]);
+        bookResponse.setBookAuthor((String) bookData[8]);
+        bookResponse.setCategoryName((String) bookData[9]);
+        bookResponse.setAverageRating((Long) bookData[10]);
+        bookResponse.setTotalRating((Long) bookData[11]);
+        bookResponse.setCreatedAt((Date) bookData[12]);
         return bookResponse;
     }
 
@@ -161,7 +184,7 @@ public class BookServiceImpl implements BookService
     {
         BookDetailPageResponse bookDetailPageResponse = new BookDetailPageResponse();
 
-        BookResponse bookResponse = bookRepository.getBookResponseByBookId(bookId);
+        BookResponse bookResponse = convertBookResponseDetail(bookRepository.getBookResponseByBookId(bookId));
 
         bookDetailPageResponse.setBookResponse(bookResponse);
 

@@ -17,15 +17,17 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer>
     @Query("SELECT b FROM BookEntity b WHERE b.createdBy = :username")
     List<BookEntity> findByCreatedBy(@Param("username") String username);
 
-    @Query("SELECT new com.buihuuduy.book_rating.DTO.response.BookResponse(" +
-            "   b.id, b.bookName, b.bookDescription, " +
-            "   b.bookImage, b.publishedDate, b.bookFormat, " +
-            "   b.bookSaleLink , l.languageName, " +
-            "   b.bookAuthor, c.cateName) " +
-            "FROM BookEntity b " +
-            "JOIN LanguageEntity l ON b.languageId = l.id " +
-            "JOIN BookCategoryEntity bc ON b.id = bc.bookId " +
-            "JOIN CategoryEntity c ON bc.categoryId = c.id " +
-            "WHERE b.id = :bookId")
-    BookResponse getBookResponseByBookId(@Param("bookId") Integer bookId);
+    @Query(value = "SELECT b.id, b.book_name as bookName, b.book_description as bookDescription, " +
+            "b.book_image as bookImage, b.published_date as publishedDate, b.book_format as bookFormat, " +
+            "b.book_sale_link as bookSaleLink, l.language_name as languageName, b.book_author as bookAuthor, " +
+            "GROUP_CONCAT(c.cate_name ORDER BY c.cate_name SEPARATOR ', ') AS categoryName, " +
+            "CEIL(AVG(fb.rating)) AS averageRating, COUNT(fb.rating) AS totalRating, b.created_at as createdAt " +
+            "FROM book b " +
+            "JOIN book_language l ON b.language_id = l.id " +
+            "JOIN book_category bc ON b.id = bc.book_id " +
+            "JOIN category c ON bc.category_id = c.id " +
+            "LEFT JOIN feedback fb ON fb.book_id = b.id " +
+            "WHERE b.id = :bookId " +
+            "GROUP BY b.id", nativeQuery = true)
+    Object[] getBookResponseByBookId(@Param("bookId") Integer bookId);
 }
