@@ -16,5 +16,11 @@ public interface UserService
 
     List<AccountResponse> getFollowerAccountByUser(Integer userId);
 
-    public UserDetailResponse getUserDetailInfo(Integer userId);
+    UserDetailResponse getUserDetailInfo(Integer userId);
+
+    void followUser(String token, Integer followedId);
+
+    void unfollowUser(String token, Integer unFollowedId);
+
+    void markAsFavorite(String token, Integer bookId);
 }

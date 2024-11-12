@@ -1,5 +1,6 @@
 package com.buihuuduy.book_rating.mapper;
 
+import com.buihuuduy.book_rating.DTO.request.BookRequestDTO;
 import com.buihuuduy.book_rating.DTO.response.BookDetailPageResponse;
 import com.buihuuduy.book_rating.DTO.response.BookResponse;
 import com.buihuuduy.book_rating.entity.BookEntity;

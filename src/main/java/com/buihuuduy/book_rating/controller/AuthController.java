@@ -6,9 +6,12 @@ import com.buihuuduy.book_rating.DTO.request.UserEntityRequest;
 import com.buihuuduy.book_rating.DTO.response.AuthenticationResponse;
 import com.buihuuduy.book_rating.exception.SuccessCode;
 import com.buihuuduy.book_rating.service.AuthService;
-import com.buihuuduy.book_rating.service.impl.AuthServiceImpl;
+import com.buihuuduy.book_rating.service.UserService;
+import com.buihuuduy.book_rating.service.utils.CommonFunction;
 import com.nimbusds.jose.JOSEException;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 
@@ -17,9 +20,11 @@ import java.text.ParseException;
 public class AuthController
 {
     private final AuthService authService;
+    private final UserService userService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
+        this.userService = userService;
     }
 
     @PostMapping("/register")
@@ -58,14 +63,14 @@ public class AuthController
         return apiResponse;
     }
 
-//    @GetMapping("/get-current-user")
-//    public ResponseEntity<String> getCurrentUser(@RequestHeader("Authorization") String authorizationHeader) {
-//        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-//            String token = authorizationHeader.substring(7); // Lấy token từ header
-//            String username = authService.getUsernameFromToken(token); // Giải mã token và lấy subject
-//            return ResponseEntity.ok("Current user: " + username);
-//        } else {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token not provided");
-//        }
-//    }
+    @GetMapping("/get-current-user")
+    public ResponseEntity<String> getCurrentUser(@RequestHeader("Authorization") String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7); // Lấy token từ header
+            String username = CommonFunction.getUsernameFromToken(token); // Giải mã token và lấy subject
+            return ResponseEntity.ok("Current user: " + username);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token not provided");
+        }
+    }
 }

@@ -9,11 +9,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FollowAccountRepository extends JpaRepository<FollowingAccountEntity, Integer>
+public interface FollowingAccountRepository extends JpaRepository<FollowingAccountEntity, Integer>
 {
-    @Query("SELECT f.followingAccountId FROM FollowingAccountEntity f WHERE f.followerAccountId = :yourAccountId")
+    @Query("SELECT f.followedAccountId FROM FollowingAccountEntity f WHERE f.followerAccountId = :yourAccountId")
     List<Integer> findAllFollowingAccountIdsByYourAccountId(@Param("yourAccountId") Integer yourAccountId);
 
-    @Query("SELECT f.followerAccountId FROM FollowingAccountEntity f WHERE f.followingAccountId = :yourAccountId")
+    @Query("SELECT f.followerAccountId FROM FollowingAccountEntity f WHERE f.followedAccountId = :yourAccountId")
     List<Integer> findAllFollowerAccountIdsByFollowingAccountId(@Param("yourAccountId") Integer yourAccountId);
+
+    FollowingAccountEntity findByFollowerAccountIdAndFollowedAccountId(Integer followerAccountId, Integer followedAccountId);
 }

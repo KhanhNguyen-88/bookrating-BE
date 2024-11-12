@@ -1,16 +1,16 @@
 version: '3'
+
 services:
+  # MySQL
   mysql:
     image: mysql:latest
-    container_name: mysql_container
+    container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: Mysql123@
-      MYSQL_USER: user
-      MYSQL_PASSWORD: Mysql123@
-    volumes:
-      - 1625d0fa15494c654c78caa17c230ffa78b98ce2676d5ee77877f663add4ed98:/var/lib/mysql
+      MYSQL_DATABASE: book_rating_db
+#      MYSQL_USER: user
+#      MYSQL_PASSWORD: user_password
     ports:
       - "3306:3306"
-
-volumes:
-  1625d0fa15494c654c78caa17c230ffa78b98ce2676d5ee77877f663add4ed98:
+#    volumes:
+#      - 1625d0fa15494c654c78caa17c230ffa78b98ce2676d5ee77877f663add4ed98:/var/lib/mysql  # Lưu trữ dữ liệu MySQL
