@@ -1,6 +1,7 @@
 package com.buihuuduy.book_rating.service.impl;
 
 import com.buihuuduy.book_rating.DTO.PageFilterInput;
+import com.buihuuduy.book_rating.DTO.request.BookRequestDTO;
 import com.buihuuduy.book_rating.DTO.request.ExplorePageFilter;
 import com.buihuuduy.book_rating.DTO.response.BookDetailPageResponse;
 import com.buihuuduy.book_rating.DTO.response.BookResponse;
@@ -13,6 +14,7 @@ import com.buihuuduy.book_rating.mapper.BookMapper;
 import com.buihuuduy.book_rating.repository.BookCategoryRepository;
 import com.buihuuduy.book_rating.repository.BookRepository;
 import com.buihuuduy.book_rating.service.BookService;
+import com.buihuuduy.book_rating.service.utils.CommonFunction;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -23,7 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -305,5 +307,33 @@ public class BookServiceImpl implements BookService
             bookResponseList.add(bookResponse);
         }
         return bookResponseList;
+    }
+
+    @Override
+    public void createBook(String token, BookRequestDTO bookRequestDTO)
+    {
+        BookEntity bookEntity = new BookEntity();
+
+        bookEntity.setBookName(bookRequestDTO.getBookName());
+        bookEntity.setBookDescription(bookRequestDTO.getBookDescription());
+        bookEntity.setBookImage(bookRequestDTO.getBookImage());
+        bookEntity.setPublishedDate(bookRequestDTO.getPublishedDate());
+        bookEntity.setBookSaleLink(bookRequestDTO.getBookSaleLink());
+        bookEntity.setBookFormat(bookRequestDTO.getBookFormat());
+        bookEntity.setLanguageId(bookRequestDTO.getLanguageId());
+        bookEntity.setBookAuthor(bookRequestDTO.getBookAuthor());
+        bookEntity.setApprovalStatus(false); // Cho duyet
+        String username = CommonFunction.getUsernameFromToken(token);
+        bookEntity.setCreatedBy(username);
+
+        bookRepository.save(bookEntity);
+
+        // Luu bang CateBook
+        for(Integer categoryId : bookRequestDTO.getCategoryId()) {
+            BookCategoryEntity bookCategoryEntity = new BookCategoryEntity();
+            bookCategoryEntity.setBookId(bookEntity.getId());
+            bookCategoryEntity.setCategoryId(categoryId);
+            bookCategoryRepository.save(bookCategoryEntity);
+        }
     }
 }

@@ -40,7 +40,10 @@ public class BookEntity extends AuditingEntity
     @Column(name = "language_id")
     Integer languageId;
 
-    // User ID
+    // Not a user just book's info
     @Column(name = "book_author")
     String bookAuthor;
+
+    @Column(name = "approval_status")
+    private Boolean approvalStatus;
 }

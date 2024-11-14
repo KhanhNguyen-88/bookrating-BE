@@ -3,7 +3,7 @@ package com.buihuuduy.book_rating.config;
 import com.buihuuduy.book_rating.DTO.CommentRequest;
 import com.buihuuduy.book_rating.DTO.PostRequest;
 import com.buihuuduy.book_rating.entity.CommentEntity;
-import com.buihuuduy.book_rating.entity.PostEntity;
+import com.buihuuduy.book_rating.entity.PostEntityTmp;
 import com.buihuuduy.book_rating.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -20,7 +20,7 @@ public class PostController
 
     @MessageMapping("/post.create")
     @SendTo("/topic/posts")
-    public PostEntity createPost(PostRequest postRequest) {
+    public PostEntityTmp createPost(PostRequest postRequest) {
         return postService.createPost(postRequest);
     }
 

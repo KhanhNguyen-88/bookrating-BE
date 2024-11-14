@@ -48,7 +48,4 @@ public class UserEntity extends AuditingEntity
 
     @Column(name = "user_link")
     String userLink;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true )
-    private List<PostEntity> posts;
 }

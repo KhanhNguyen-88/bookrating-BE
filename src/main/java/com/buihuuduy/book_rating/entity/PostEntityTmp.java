@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "posts")
-public class PostEntity {
+public class PostEntityTmp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

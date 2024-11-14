@@ -3,13 +3,17 @@ package com.buihuuduy.book_rating.controller;
 import com.buihuuduy.book_rating.DTO.ApiResponse;
 import com.buihuuduy.book_rating.DTO.PageFilterInput;
 import com.buihuuduy.book_rating.DTO.PageResponse;
+import com.buihuuduy.book_rating.DTO.request.BookRequestDTO;
 import com.buihuuduy.book_rating.DTO.request.ExplorePageFilter;
 import com.buihuuduy.book_rating.DTO.response.BookDetailPageResponse;
 import com.buihuuduy.book_rating.DTO.response.BookResponse;
 import com.buihuuduy.book_rating.service.BookService;
+import com.buihuuduy.book_rating.service.utils.CommonFunction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -74,6 +78,22 @@ public class BookController
         ApiResponse<List<BookResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
         apiResponse.setResult(bookService.getFavoriteBookByUserId(userId));
+        return apiResponse;
+    }
+
+    @PostMapping("/up-book")
+    public ApiResponse<?> upBook(@RequestHeader("Authorization") String authorizationHeader, @RequestBody BookRequestDTO bookRequestDTO)
+    {
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7); // Lấy token từ header
+            bookService.createBook(token, bookRequestDTO);
+            apiResponse.setCode(200);
+            apiResponse.setMessage("Đã đăng bài vui lòng chờ duyệt");
+        } else {
+            apiResponse.setCode(401);
+            apiResponse.setMessage("Authorization header is invalid");
+        }
         return apiResponse;
     }
 }

@@ -32,4 +32,7 @@ public abstract class AuditingEntity
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+    @Column(name = "is_active")
+    private Boolean isActive = true;
 }

@@ -6,10 +6,8 @@ import com.buihuuduy.book_rating.DTO.response.AccountResponse;
 import com.buihuuduy.book_rating.DTO.response.UserDetailResponse;
 import com.buihuuduy.book_rating.exception.SuccessCode;
 import com.buihuuduy.book_rating.service.UserService;
-import com.buihuuduy.book_rating.service.impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -56,6 +54,54 @@ public class UserController
         ApiResponse<List<AccountResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
         apiResponse.setResult(userService.getFollowerAccountByUser(userId));
+        return apiResponse;
+    }
+
+    @PostMapping("/follow-account/{followedId}")
+    public ApiResponse<?> followAccount(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Integer followedId)
+    {
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7); // Lấy token từ header
+            userService.followUser(token, followedId);
+            apiResponse.setCode(200);
+        }
+        else {
+            apiResponse.setCode(401);
+            apiResponse.setMessage("Authorization header is invalid");
+        }
+        return apiResponse;
+    }
+
+    @PostMapping("/unfollow-account/{unfollowedId}")
+    public ApiResponse<?> unFollowAccount(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Integer unfollowedId)
+    {
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7); // Lấy token từ header
+            userService.unfollowUser(token, unfollowedId);
+            apiResponse.setCode(200);
+        }
+        else {
+            apiResponse.setCode(401);
+            apiResponse.setMessage("Authorization header is invalid");
+        }
+        return apiResponse;
+    }
+
+    @PostMapping("/mark-favorite-book/{bookId}")
+    public ApiResponse<?> markAsFavorite(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Integer bookId)
+    {
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7); // Lấy token từ header
+            userService.markAsFavorite(token, bookId);
+            apiResponse.setCode(200);
+        }
+        else {
+            apiResponse.setCode(401);
+            apiResponse.setMessage("Authorization header is invalid");
+        }
         return apiResponse;
     }
 }

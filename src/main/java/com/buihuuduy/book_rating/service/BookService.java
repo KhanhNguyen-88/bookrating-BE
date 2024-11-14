@@ -1,6 +1,7 @@
 package com.buihuuduy.book_rating.service;
 
 import com.buihuuduy.book_rating.DTO.PageFilterInput;
+import com.buihuuduy.book_rating.DTO.request.BookRequestDTO;
 import com.buihuuduy.book_rating.DTO.request.ExplorePageFilter;
 import com.buihuuduy.book_rating.DTO.response.BookDetailPageResponse;
 import com.buihuuduy.book_rating.DTO.response.BookResponse;
@@ -24,4 +25,6 @@ public interface BookService
     List<BookResponse> searchBookByText(String common);
 
     List<BookResponse> getFavoriteBookByUserId(Integer userId);
+
+    void createBook(String token, BookRequestDTO bookRequestDTO);
 }

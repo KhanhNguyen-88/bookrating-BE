@@ -18,8 +18,8 @@ public class FollowingAccountEntity extends AuditingEntity
     Integer id;
 
     // Duoc follow
-    @Column(name = "following_account_id")
-    Integer followingAccountId;
+    @Column(name = "followed_account_id")
+    Integer followedAccountId;
 
     // Dang đi follow
     @Column(name = "follower_account_id")
