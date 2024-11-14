@@ -4,9 +4,9 @@ server:
 
 spring:
   datasource:
-    url: "jdbc:mysql://localhost:3306/book_rating_db"
+    url: "jdbc:mysql://localhost:3308/book_rating_db"
     username: root
-    password: Mysql123@
+    password: Khanh2003@
   jpa:
     hibernate:
       ddl-auto: update
