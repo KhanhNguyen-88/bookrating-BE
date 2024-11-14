@@ -12,8 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
-public class UserController
-{
+public class UserController {
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -21,8 +20,7 @@ public class UserController
     }
 
     @PostMapping("/update/{userId}")
-    public ApiResponse<?> registerUser(@RequestBody @Valid UserEntityRequest user, @PathVariable int userId)
-    {
+    public ApiResponse<?> registerUser(@RequestBody @Valid UserEntityRequest user, @PathVariable int userId) {
         userService.updateUser(userId, user);
         ApiResponse<?> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
@@ -31,8 +29,7 @@ public class UserController
     }
 
     @GetMapping("/detail/{userId}")
-    public ApiResponse<UserDetailResponse> getUserDetailInfo(@PathVariable int userId)
-    {
+    public ApiResponse<UserDetailResponse> getUserDetailInfo(@PathVariable int userId) {
         ApiResponse<UserDetailResponse> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
         apiResponse.setResult(userService.getUserDetailInfo(userId));
@@ -40,8 +37,7 @@ public class UserController
     }
 
     @GetMapping("/following-account/{userId}")
-    public ApiResponse<List<AccountResponse>> getFollowingAccountByUser(@PathVariable int userId)
-    {
+    public ApiResponse<List<AccountResponse>> getFollowingAccountByUser(@PathVariable int userId) {
         ApiResponse<List<AccountResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
         apiResponse.setResult(userService.getFollowingAccountByUser(userId));
@@ -49,8 +45,7 @@ public class UserController
     }
 
     @GetMapping("/follower-account/{userId}")
-    public ApiResponse<List<AccountResponse>> getFollowerAccountByUser(@PathVariable int userId)
-    {
+    public ApiResponse<List<AccountResponse>> getFollowerAccountByUser(@PathVariable int userId) {
         ApiResponse<List<AccountResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
         apiResponse.setResult(userService.getFollowerAccountByUser(userId));
@@ -58,15 +53,13 @@ public class UserController
     }
 
     @PostMapping("/follow-account/{followedId}")
-    public ApiResponse<?> followAccount(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Integer followedId)
-    {
+    public ApiResponse<?> followAccount(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Integer followedId) {
         ApiResponse<?> apiResponse = new ApiResponse<>();
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7); // Lấy token từ header
             userService.followUser(token, followedId);
             apiResponse.setCode(200);
-        }
-        else {
+        } else {
             apiResponse.setCode(401);
             apiResponse.setMessage("Authorization header is invalid");
         }
@@ -74,15 +67,13 @@ public class UserController
     }
 
     @PostMapping("/unfollow-account/{unfollowedId}")
-    public ApiResponse<?> unFollowAccount(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Integer unfollowedId)
-    {
+    public ApiResponse<?> unFollowAccount(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Integer unfollowedId) {
         ApiResponse<?> apiResponse = new ApiResponse<>();
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7); // Lấy token từ header
             userService.unfollowUser(token, unfollowedId);
             apiResponse.setCode(200);
-        }
-        else {
+        } else {
             apiResponse.setCode(401);
             apiResponse.setMessage("Authorization header is invalid");
         }
@@ -90,15 +81,55 @@ public class UserController
     }
 
     @PostMapping("/mark-favorite-book/{bookId}")
-    public ApiResponse<?> markAsFavorite(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Integer bookId)
-    {
+    public ApiResponse<?> markAsFavorite(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Integer bookId) {
         ApiResponse<?> apiResponse = new ApiResponse<>();
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7); // Lấy token từ header
             userService.markAsFavorite(token, bookId);
             apiResponse.setCode(200);
+        } else {
+            apiResponse.setCode(401);
+            apiResponse.setMessage("Authorization header is invalid");
         }
-        else {
+        return apiResponse;
+    }
+
+    @GetMapping("/following-account-by-token")
+    public ApiResponse<List<AccountResponse>> getFollowingAccountByToken(@RequestHeader("Authorization") String authorizationHeader) {
+        ApiResponse<List<AccountResponse>> apiResponse = new ApiResponse<>();
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+            apiResponse.setResult(userService.getFollowingAccountByToken(token));
+            apiResponse.setCode(200);
+        } else {
+            apiResponse.setCode(401);
+            apiResponse.setMessage("Authorization header is invalid");
+        }
+        return apiResponse;
+    }
+
+    @GetMapping("/follower-account-by-token")
+    public ApiResponse<List<AccountResponse>> getFollowerAccountByToken(@RequestHeader("Authorization") String authorizationHeader) {
+        ApiResponse<List<AccountResponse>> apiResponse = new ApiResponse<>();
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+            apiResponse.setResult(userService.getFollowerAccountByToken(token));
+            apiResponse.setCode(200);
+        } else {
+            apiResponse.setCode(401);
+            apiResponse.setMessage("Authorization header is invalid");
+        }
+        return apiResponse;
+    }
+
+    @GetMapping("/detail-by-token")
+    public ApiResponse<UserDetailResponse> getUserDetailInfoByToken(@RequestHeader("Authorization") String authorizationHeader) {
+        ApiResponse<UserDetailResponse> apiResponse = new ApiResponse<>();
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+            apiResponse.setResult(userService.getUserDetailInfoByToken(token));
+            apiResponse.setCode(200);
+        } else {
             apiResponse.setCode(401);
             apiResponse.setMessage("Authorization header is invalid");
         }

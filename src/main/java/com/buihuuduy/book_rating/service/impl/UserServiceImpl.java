@@ -136,4 +136,28 @@ public class UserServiceImpl implements UserService
         favoriteBookEntity.setUserId(currentUser.getId());
         favoriteBookRepository.save(favoriteBookEntity);
     }
+
+    @Override
+    public List<AccountResponse> getFollowingAccountByToken(String token) {
+        String username = CommonFunction.getUsernameFromToken(token);
+        UserEntity userEntity = userRepository.findByUsername(username);
+        if(userEntity == null) throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        return getFollowingAccountByUser(userEntity.getId());
+    }
+
+    @Override
+    public List<AccountResponse> getFollowerAccountByToken(String token) {
+        String username = CommonFunction.getUsernameFromToken(token);
+        UserEntity userEntity = userRepository.findByUsername(username);
+        if(userEntity == null) throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        return getFollowerAccountByUser(userEntity.getId());
+    }
+
+    @Override
+    public UserDetailResponse getUserDetailInfoByToken(String token) {
+        String username = CommonFunction.getUsernameFromToken(token);
+        UserEntity userEntity = userRepository.findByUsername(username);
+        if(userEntity == null) throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        return getUserDetailInfo(userEntity.getId());
+    }
 }
