@@ -4,7 +4,6 @@ import com.buihuuduy.book_rating.DTO.request.UserEntityRequest;
 import com.buihuuduy.book_rating.DTO.response.AccountResponse;
 import com.buihuuduy.book_rating.DTO.response.UserDetailResponse;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -23,4 +22,10 @@ public interface UserService
     void unfollowUser(String token, Integer unFollowedId);
 
     void markAsFavorite(String token, Integer bookId);
+
+    List<AccountResponse> getFollowingAccountByToken(String token);
+
+    List<AccountResponse> getFollowerAccountByToken(String token);
+
+    UserDetailResponse getUserDetailInfoByToken(String token);
 }
