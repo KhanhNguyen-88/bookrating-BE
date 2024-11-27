@@ -55,7 +55,15 @@ public class UserServiceImpl implements UserService
             accountResponse.setUserName(userEntity.getUsername());
             accountResponse.setUserImage(userEntity.getUserImage());
 
+
             accountResponseList.add(accountResponse);
+            for (AccountResponse user : accountResponseList){
+                if(introspectFollowBack(user.getUserId(), userId) == 0){
+                    user.setFollowBack(false);
+                }else {
+                    user.setFollowBack(true);
+                }
+            }
         }
         return accountResponseList;
     }
@@ -75,6 +83,13 @@ public class UserServiceImpl implements UserService
             accountResponse.setUserImage(userEntity.getUserImage());
 
             accountResponseList.add(accountResponse);
+            for (AccountResponse user : accountResponseList){
+                if(introspectFollowBack(user.getUserId(), userId) == 0){
+                    user.setFollowBack(false);
+                }else {
+                    user.setFollowBack(true);
+                }
+            }
         }
         return accountResponseList;
     }
@@ -87,6 +102,7 @@ public class UserServiceImpl implements UserService
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
+        userDetailResponse.setId(userEntity.getId());
         userDetailResponse.setUserName(userEntity.getUsername());
         userDetailResponse.setUserImage(userEntity.getUserImage());
         // Thieu so luong bai post
@@ -104,11 +120,19 @@ public class UserServiceImpl implements UserService
         UserEntity currentUser = userRepository.findByUsername(currentUsername);
         if(currentUser == null) throw new CustomException(ErrorCode.USER_NOT_FOUND);
 
-        FollowingAccountEntity followingAccountEntity = new FollowingAccountEntity();
-        // Nguoi dang di follow - nguoi duoc follow
-        followingAccountEntity.setFollowerAccountId(currentUser.getId());
-        followingAccountEntity.setFollowedAccountId(followedId);
-        followingAccountRepository.save(followingAccountEntity);
+        FollowingAccountEntity followingAccount = followingAccountRepository
+                .findByFollowerAccountIdAndFollowedAccountId(currentUser.getId(), followedId);
+        if(followingAccount != null){
+            followingAccount.setIsActive(true);
+            followingAccountRepository.save(followingAccount);
+        } else{
+            FollowingAccountEntity newFollowingAccountEntity = new FollowingAccountEntity();
+            // Nguoi dang di follow - nguoi duoc follow
+            newFollowingAccountEntity.setFollowerAccountId(currentUser.getId());
+            newFollowingAccountEntity.setFollowedAccountId(followedId);
+            followingAccountRepository.save(newFollowingAccountEntity);
+        }
+
     }
 
     @Override
@@ -159,5 +183,9 @@ public class UserServiceImpl implements UserService
         UserEntity userEntity = userRepository.findByUsername(username);
         if(userEntity == null) throw new CustomException(ErrorCode.USER_NOT_FOUND);
         return getUserDetailInfo(userEntity.getId());
+    }
+
+    public Long introspectFollowBack(Integer followingAccountId, Integer followerAccountId){
+        return userRepository.introspectFollowBack(followingAccountId, followerAccountId);
     }
 }
