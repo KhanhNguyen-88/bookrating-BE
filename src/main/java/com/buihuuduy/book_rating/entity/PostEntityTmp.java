@@ -22,6 +22,6 @@ public class PostEntityTmp {
     private String content;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<CommentEntity> comments = new ArrayList<>();
+    private List<CommentEntityTmp> comments = new ArrayList<>();
 }
 

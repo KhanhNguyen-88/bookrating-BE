@@ -44,6 +44,11 @@ public class BookEntity extends AuditingEntity
     @Column(name = "book_author")
     String bookAuthor;
 
-    @Column(name = "approval_status")
-    private Boolean approvalStatus;
+    /*
+    waiting = 0
+    approved = 1
+    reject = 2
+     */
+    @Column(name = "approvalStatus")
+    Integer approvalStatus = 0;
 }

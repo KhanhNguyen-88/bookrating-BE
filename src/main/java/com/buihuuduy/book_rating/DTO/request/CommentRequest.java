@@ -8,10 +8,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FeedbackRequest
+public class CommentRequest
 {
-    String userName;
-
     String comment;
 
     Integer rating;

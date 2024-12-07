@@ -4,14 +4,22 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BookDetailPageResponse
+public class CommentResponse
 {
-    BookResponse bookResponse;
+    String userImage;
 
-    List<FeedbackResponse> feedbackResponseList;
+    String userName;
+
+    Integer userId;
+
+    String comment;
+
+    Integer rating;
+
+    LocalDateTime createdAt;
 }

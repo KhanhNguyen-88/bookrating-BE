@@ -2,17 +2,20 @@ package com.buihuuduy.book_rating.service.impl;
 
 import com.buihuuduy.book_rating.DTO.PageFilterInput;
 import com.buihuuduy.book_rating.DTO.request.BookRequestDTO;
+import com.buihuuduy.book_rating.DTO.request.CommentRequest;
 import com.buihuuduy.book_rating.DTO.request.ExplorePageFilter;
-import com.buihuuduy.book_rating.DTO.response.BookDetailPageResponse;
+import com.buihuuduy.book_rating.DTO.response.BookDetailResponse;
 import com.buihuuduy.book_rating.DTO.response.BookResponse;
-import com.buihuuduy.book_rating.DTO.response.FeedbackResponse;
+import com.buihuuduy.book_rating.DTO.response.CommentResponse;
 import com.buihuuduy.book_rating.entity.BookCategoryEntity;
 import com.buihuuduy.book_rating.entity.BookEntity;
+import com.buihuuduy.book_rating.entity.CommentEntity;
 import com.buihuuduy.book_rating.exception.CustomException;
 import com.buihuuduy.book_rating.exception.ErrorCode;
 import com.buihuuduy.book_rating.mapper.BookMapper;
 import com.buihuuduy.book_rating.repository.BookCategoryRepository;
 import com.buihuuduy.book_rating.repository.BookRepository;
+import com.buihuuduy.book_rating.repository.CommentRepository;
 import com.buihuuduy.book_rating.service.BookService;
 import com.buihuuduy.book_rating.service.utils.CommonFunction;
 import jakarta.persistence.EntityManager;
@@ -24,7 +27,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,14 +44,16 @@ public class BookServiceImpl implements BookService
     private static final Logger log = LoggerFactory.getLogger(BookServiceImpl.class);
     private final BookCategoryRepository bookCategoryRepository;
     private final BookRepository bookRepository;
+    private final CommentRepository commentRepository;
     private final BookMapper bookMapper;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public BookServiceImpl(BookCategoryRepository bookCategoryRepository, BookRepository bookRepository, BookMapper bookMapper) {
+    public BookServiceImpl(BookCategoryRepository bookCategoryRepository, BookRepository bookRepository, CommentRepository commentRepository, BookMapper bookMapper) {
         this.bookCategoryRepository = bookCategoryRepository;
         this.bookRepository = bookRepository;
+        this.commentRepository = commentRepository;
         this.bookMapper = bookMapper;
     }
 
@@ -181,9 +191,9 @@ public class BookServiceImpl implements BookService
     }
 
     @Override
-    public BookDetailPageResponse getBookDetailById(Integer bookId)
+    public BookDetailResponse getBookDetailById(Integer bookId)
     {
-        BookDetailPageResponse bookDetailPageResponse = new BookDetailPageResponse();
+        BookDetailResponse bookDetailPageResponse = new BookDetailResponse();
 
         BookResponse bookResponse = convertBookResponseDetail(bookRepository.getBookResponseByBookId(bookId));
 
@@ -196,30 +206,29 @@ public class BookServiceImpl implements BookService
                 .append("   u.username, u.user_image, ")
                 .append("   fb.comment, fb.rating, ")
                 .append("   fb.updated_at ")
-                .append("FROM book_rating_db.feedback fb ")
-                .append("LEFT JOIN book_rating_db.user u ON fb.user_id = u.id ")
+                .append("FROM feedback fb ")
+                .append("LEFT JOIN user u ON fb.user_id = u.id ")
                 .append("WHERE fb.book_id = ").append(bookId);
 
         Query query = entityManager.createNativeQuery(sql.toString());
 
         List<Object[]> results = query.getResultList();
-        List<FeedbackResponse> feedbackResponseList = new ArrayList<>();
-
-        for(Object[] result : results)
-        {
-            FeedbackResponse feedbackResponse = new FeedbackResponse();
-
-            feedbackResponse.setUserId((Integer) result[0]);
-            feedbackResponse.setUserName((String) result[1]);
-            feedbackResponse.setUserImage((String) result[2]);
-            feedbackResponse.setComment((String) result[3]);
-            feedbackResponse.setRating((Integer) result[4]);
-            feedbackResponse.setCreatedAt((LocalDateTime) result[5]);
-
-            feedbackResponseList.add(feedbackResponse);
+        if (results == null || results.isEmpty()) {
+            bookDetailPageResponse.setFeedbackResponseList(null);
+        } else {
+            List<CommentResponse> feedbackResponseList = new ArrayList<>();
+            for (Object[] result : results) {
+                CommentResponse feedbackResponse = new CommentResponse();
+                feedbackResponse.setUserId((Integer) result[0]);
+                feedbackResponse.setUserName((String) result[1]);
+                feedbackResponse.setUserImage((String) result[2]);
+                feedbackResponse.setComment((String) result[3]);
+                feedbackResponse.setRating((Integer) result[4]);
+                //feedbackResponse.setCreatedAt((LocalDateTime) result[5]);
+                feedbackResponseList.add(feedbackResponse);
+            }
+            bookDetailPageResponse.setFeedbackResponseList(feedbackResponseList);
         }
-
-        bookDetailPageResponse.setFeedbackResponseList(feedbackResponseList);
         return bookDetailPageResponse;
     }
 
@@ -309,7 +318,7 @@ public class BookServiceImpl implements BookService
     }
 
     @Override
-    public void createBook(String token, BookRequestDTO bookRequestDTO)
+    public void upBook(String token, BookRequestDTO bookRequestDTO)
     {
         BookEntity bookEntity = new BookEntity();
 
@@ -321,9 +330,11 @@ public class BookServiceImpl implements BookService
         bookEntity.setBookFormat(bookRequestDTO.getBookFormat());
         bookEntity.setLanguageId(bookRequestDTO.getLanguageId());
         bookEntity.setBookAuthor(bookRequestDTO.getBookAuthor());
-        bookEntity.setApprovalStatus(false); // Cho duyet
+        // waiting default is 0 when declare
+
         String username = CommonFunction.getUsernameFromToken(token);
         bookEntity.setCreatedBy(username);
+        bookEntity.setCreatedAt(LocalDateTime.now());
 
         bookRepository.save(bookEntity);
 
@@ -334,5 +345,45 @@ public class BookServiceImpl implements BookService
             bookCategoryEntity.setCategoryId(categoryId);
             bookCategoryRepository.save(bookCategoryEntity);
         }
+    }
+
+    @Override
+    public void commentBook(String token, CommentRequest commentRequest)
+    {
+        CommentEntity commentEntity = new CommentEntity();
+
+        commentEntity.setBookId(commentRequest.getBookId());
+        commentEntity.setComment(commentRequest.getComment());
+        commentEntity.setRating(commentRequest.getRating());
+
+        String username = CommonFunction.getUsernameFromToken(token);
+        commentEntity.setCreatedBy(username);
+        commentEntity.setCreatedAt(LocalDateTime.now());
+
+        commentRepository.save(commentEntity);
+    }
+
+    @Override
+    public List<BookDetailResponse> getBookListOnHomePage()
+    {
+        List<BookEntity> bookEntityList = bookRepository.findAll();
+
+        List<BookDetailResponse> bookDetailResponseList = new ArrayList<>();
+
+        for(BookEntity bookEntity : bookEntityList) {
+            BookDetailResponse bookDetailResponse = getBookDetailById(bookEntity.getId());
+            bookDetailResponseList.add(bookDetailResponse);
+        }
+
+        return bookDetailResponseList;
+    }
+
+    @Override
+    public Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts() {
+        return Flux.interval(Duration.ofSeconds(2))
+                .publishOn(Schedulers.boundedElastic())
+                .map(sequence -> ServerSentEvent.<List<BookDetailResponse>>builder().id(String.valueOf(sequence))
+                        .event("post-list-event").data(getBookListOnHomePage())
+                        .build());
     }
 }

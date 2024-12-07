@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import com.nimbusds.jwt.JWTClaimsSet;
 import java.text.ParseException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
@@ -50,6 +51,7 @@ public class AuthServiceImpl implements AuthService
         }
 
         UserEntity userEntity = userMapper.toUser(userSignInRequest);
+        userEntity.setCreatedAt(LocalDateTime.now());
 
         // Encode password
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);

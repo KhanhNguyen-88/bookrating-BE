@@ -16,6 +16,8 @@ public class Constant
         "/api/book/get-posted-by-username/{username}",
         "/api/book/search-common/{text}",
         "/api/book/get-book-by-userId/1",
+        "/api/book/get-list-book-detail",
+        "/api/book/stream",
 
         "/api/mail/send-code",
         "/api/mail/verify-code",
