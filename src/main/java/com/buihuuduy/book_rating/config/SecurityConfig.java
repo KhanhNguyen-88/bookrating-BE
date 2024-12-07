@@ -37,24 +37,11 @@ public class SecurityConfig
         );
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        //httpSecurity.cors(AbstractHttpConfigurer::disable);
+        httpSecurity.cors(AbstractHttpConfigurer::disable);
         httpSecurity.cors(Customizer.withDefaults());
         return httpSecurity.build();
     }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:63342")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
-                        .allowedHeaders("Content-Type", "Authorization")
-                        .allowCredentials(true);
-            }
-        };
-    }
     @Bean
     public CorsFilter corsFilter() throws Exception {
         CorsConfiguration config = new CorsConfiguration();

@@ -26,5 +26,6 @@ public class PostEntityTmp {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private  UserEntity user;
+    private List<CommentEntityTmp> comments = new ArrayList<>();
 }
 

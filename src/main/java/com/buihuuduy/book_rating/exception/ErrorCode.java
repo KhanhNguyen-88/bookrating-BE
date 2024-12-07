@@ -25,6 +25,7 @@ public enum ErrorCode
     CATEGORY_NOT_FOUND(404, "Không tìm thấy danh mục"),
     BOOK_NOT_FOUND(404, "Không tìm thấy sách"),
     JWT_INVALID(400, "JWT không hợp lệ"),
+    POST_NOT_FOUND(404, "Không tìm thấy bài đăng"),
     ;
 
     Integer code;

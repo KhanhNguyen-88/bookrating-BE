@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .book-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .book-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            background: #fafafa;
+        }
+
+        .book-card img {
+            max-width: 100px;
+            height: auto;
+            float: left;
+            margin-right: 15px;
+            border-radius: 5px;
+        }
+
+        .book-info {
+            overflow: hidden;
+        }
+
+        .book-info h2 {
+            margin: 0;
+            color: #007bff;
+        }
+
+        .book-info p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .comment-section {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-top: 1px solid #ddd;
+        }
+
+        .comment {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment .username {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .comment .rating {
+            font-size: 14px;
+            color: #ffa500;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Danh sách bài đăng</h1>
+    <div id="bookList" class="book-list"></div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const bookListContainer = document.getElementById("bookList");
+
+        const eventSource = new EventSource("http://localhost:8081/api/book/stream");
+
+        eventSource.addEventListener("post-list-event", (event) => {
+            console.log("Dữ liệu nhận được từ SSE:", event.data);
+
+            const data = JSON.parse(event.data);
+
+            if (data && Array.isArray(data)) {
+                renderBookList(data);
+            } else {
+                console.error("Dữ liệu không hợp lệ hoặc không phải mảng", data);
+            }
+        });
+
+        function renderBookList(books) {
+
+            bookListContainer.innerHTML = '';
+
+            books.forEach(book => {
+                const bookCard = document.createElement("div");
+                bookCard.classList.add("book-card");
+
+                const bookInfo = book.bookResponse;
+                const feedbacks = book.feedbackResponseList || [];
+
+                // Đặt cấu trúc HTML cho mỗi sách
+                bookCard.innerHTML = `
+                    <div class="book-info">
+                        <img src="${bookInfo.bookImage}" alt="${bookInfo.bookName}" class="book-image">
+                        <p>${bookInfo.bookName}</p>
+                        <p><strong>Tác giả:</strong> ${bookInfo.bookAuthor}</p>
+                        <p><strong>Ngôn ngữ:</strong> ${bookInfo.language}</p>
+                        <p><strong>Mô tả:</strong> ${bookInfo.bookDescription}</p>
+                        <p><strong>Đánh giá trung bình:</strong> ${bookInfo.averageRating ? bookInfo.averageRating : "Chưa có đánh giá"}</p>
+                        <p><strong>Ngày phát hành:</strong> ${new Date(bookInfo.publishedDate).toLocaleDateString()}</p>
+                        <a href="${bookInfo.bookSaleLink}" target="_blank">Mua sách</a>
+                    </div>
+                    <div class="comment-section">
+                        <h3>Bình luận:</h3>
+                        ${
+                    feedbacks.length > 0
+                        ? feedbacks
+                            .map(
+                                feedback => `
+                                            <div class="comment">
+                                                <p class="username">${feedback.userName || "Người dùng ẩn danh"}:</p>
+                                                <p>${feedback.comment}</p>
+                                                <p class="rating">Đánh giá: ${feedback.rating || 0}/5</p>
+                                            </div>
+                                        `
+                            )
+                            .join("")
+                        : `<p>Chưa có bình luận.</p>`
+                }
+                    </div>
+                `;
+
+                bookListContainer.appendChild(bookCard);
+            });
+        }
+
+        // Xử lý lỗi kết nối SSE
+        eventSource.onerror = function (error) {
+            console.error("Error with SSE connection:", error);
+            alert("Đã xảy ra lỗi với kết nối SSE.");
+            eventSource.close();
+        };
+    });
+</script>
+
+
+</body>
+</html>

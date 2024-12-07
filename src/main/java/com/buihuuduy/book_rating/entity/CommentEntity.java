@@ -1,22 +1,31 @@
 package com.buihuuduy.book_rating.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
-@Data
 @Entity
-@Table(name = "comments")
-public class CommentEntity {
-
+@Table(name = "feedback")
+@Data
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class CommentEntity extends AuditingEntity
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
-    @Column(name = "content")
-    private String content;
+    @Column(name = "book_id")
+    Integer bookId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private PostEntityTmp post;
+    @Column(name = "rating")
+    Integer rating;
+
+    @Column(name = "comment")
+    String comment;
+
+    @Column(name = "user_id")
+    Integer userId;
 }
-

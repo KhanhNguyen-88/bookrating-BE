@@ -2,21 +2,26 @@ package com.buihuuduy.book_rating.service;
 
 import com.buihuuduy.book_rating.DTO.PageFilterInput;
 import com.buihuuduy.book_rating.DTO.request.BookRequestDTO;
+import com.buihuuduy.book_rating.DTO.request.CommentRequest;
 import com.buihuuduy.book_rating.DTO.request.ExplorePageFilter;
-import com.buihuuduy.book_rating.DTO.response.BookDetailPageResponse;
+import com.buihuuduy.book_rating.DTO.response.BookDetailResponse;
 import com.buihuuduy.book_rating.DTO.response.BookResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
 @Service
 public interface BookService
 {
+    Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts();
+
     Page<BookResponse> getBooksInExplorePage(PageFilterInput<ExplorePageFilter> input, Pageable pageable);
 
-    BookDetailPageResponse getBookDetailById(Integer bookId);
+    BookDetailResponse getBookDetailById(Integer bookId);
 
     List<String> getAuthorsRecommendation(String input);
 
@@ -26,5 +31,9 @@ public interface BookService
 
     List<BookResponse> getFavoriteBookByUserId(Integer userId);
 
-    void createBook(String token, BookRequestDTO bookRequestDTO);
+    void upBook(String token, BookRequestDTO bookRequestDTO);
+
+    void commentBook(String token, CommentRequest commentRequest);
+
+    List<BookDetailResponse> getBookListOnHomePage();
 }
