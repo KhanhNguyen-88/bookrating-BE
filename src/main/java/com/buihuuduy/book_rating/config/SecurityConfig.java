@@ -43,7 +43,7 @@ public class SecurityConfig
     @Bean
     public CorsFilter corsFilter() throws Exception {
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("http://localhost:63342");
+        config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
