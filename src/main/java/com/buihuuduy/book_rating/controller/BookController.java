@@ -18,7 +18,6 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("/api/book")
 public class BookController
@@ -29,10 +28,10 @@ public class BookController
         this.bookService = bookService;
     }
 
-    @CrossOrigin(origins = "http://localhost:63342")
     @GetMapping("/stream")
-    public Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts() {
-        return bookService.streamPosts();
+    public Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        return bookService.streamPosts(token);
     }
 
     @PostMapping("/get-explore-page")
@@ -44,12 +43,13 @@ public class BookController
         return new PageResponse<List<BookResponse>>().result(result.getContent()).dataCount(result.getTotalElements());
     }
 
-    @GetMapping("/{bookId}")
-    public ApiResponse<BookDetailResponse> getBookById(@PathVariable("bookId") Integer bookId)
+    @GetMapping("/detail-with-token/{bookId}")
+    public ApiResponse<BookDetailResponse> getBookById(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("bookId") Integer bookId)
     {
+        String token = authorizationHeader.substring(7); // Lấy token từ header
         ApiResponse<BookDetailResponse> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
-        apiResponse.setResult(bookService.getBookDetailById(bookId));
+        apiResponse.setResult(bookService.getBookDetailByIdWithToken(token, bookId));
         return apiResponse;
     }
 
@@ -89,7 +89,6 @@ public class BookController
         return apiResponse;
     }
 
-    @CrossOrigin(origins = "http://localhost:63342")
     @PostMapping("/up-book")
     public ApiResponse<?> upBook(@RequestHeader("Authorization") String authorizationHeader, @RequestBody BookRequestDTO bookRequestDTO)
     {
@@ -122,13 +121,13 @@ public class BookController
     }
 
     // API Test
-    @CrossOrigin(origins = "http://localhost:63342")
-    @GetMapping("/get-list-book-detail")
-    public ApiResponse<List<BookDetailResponse>> getBookListOnHomePage()
-    {
-        ApiResponse<List<BookDetailResponse>> apiResponse = new ApiResponse<>();
-        apiResponse.setCode(200);
-        apiResponse.setResult(bookService.getBookListOnHomePage());
-        return apiResponse;
-    }
+//    @GetMapping("/get-list-book-detail")
+//    public ApiResponse<List<BookDetailResponse>> getBookListOnHomePage(@RequestHeader("Authorization") String authorizationHeader)
+//    {
+//        String token = authorizationHeader.substring(7);
+//        ApiResponse<List<BookDetailResponse>> apiResponse = new ApiResponse<>();
+//        apiResponse.setCode(200);
+//        apiResponse.setResult(bookService.getBookListOnHomePage(token));
+//        return apiResponse;
+//    }
 }
