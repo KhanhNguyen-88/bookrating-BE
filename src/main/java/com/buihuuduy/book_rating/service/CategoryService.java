@@ -1,5 +1,6 @@
 package com.buihuuduy.book_rating.service;
 
+import com.buihuuduy.book_rating.DTO.request.CategoryRequest;
 import com.buihuuduy.book_rating.entity.CategoryEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -10,4 +11,6 @@ public interface CategoryService
     List<CategoryEntity> getAllCategories();
 
     List<CategoryEntity> getCategoryById(long id);
+
+    void addCategory(CategoryRequest categoryRequest);
 }

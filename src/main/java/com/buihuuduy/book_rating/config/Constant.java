@@ -24,7 +24,7 @@ public class Constant
 
         "/api/category/get-all",
         "/api/category/get-by-book",
-
+        "/api/category/add",
         "/api/feedback/add",
         "/api/feedback/stream",
 
