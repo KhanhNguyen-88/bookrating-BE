@@ -1,13 +1,11 @@
 package com.buihuuduy.book_rating.controller;
 
 import com.buihuuduy.book_rating.DTO.ApiResponse;
+import com.buihuuduy.book_rating.DTO.request.CategoryRequest;
 import com.buihuuduy.book_rating.entity.CategoryEntity;
 import com.buihuuduy.book_rating.service.CategoryService;
 import com.buihuuduy.book_rating.service.impl.CategoryServiceImpl;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,8 +23,18 @@ public class CategoryController
     public ApiResponse<List<CategoryEntity>> getAllCategories() {
         return new ApiResponse<>().result(categoryService.getAllCategories());
     }
+
     @GetMapping("/get-by-book")
     public ApiResponse<List<CategoryEntity>> getByBookId(@RequestParam int bookId) {
         return new ApiResponse<>().result(categoryService.getCategoryById(bookId));
+    }
+
+    @PostMapping("/add")
+    public ApiResponse<?> addCategory(@RequestBody CategoryRequest categoryRequest)
+    {
+        categoryService.addCategory(categoryRequest);
+        ApiResponse<?> response = new ApiResponse<>();
+        response.setCode(200);
+        return response;
     }
 }

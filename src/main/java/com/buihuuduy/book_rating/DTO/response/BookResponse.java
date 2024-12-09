@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -41,4 +39,7 @@ public class BookResponse
 
     Date createdAt;
 
+    Integer isFavorite;
+
+    String createdBy; // Full Name
 }
