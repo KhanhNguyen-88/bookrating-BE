@@ -28,6 +28,7 @@ public class Constant
         "/api/feedback/add",
         "/api/feedback/stream",
 
-        "/ws/**"
+        "/ws/**",
+        "/api/book/stream/{userId}"
     };
 }

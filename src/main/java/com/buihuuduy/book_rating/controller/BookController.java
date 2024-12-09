@@ -28,10 +28,9 @@ public class BookController
         this.bookService = bookService;
     }
 
-    @GetMapping("/stream")
-    public Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts(@RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
-        return bookService.streamPosts(token);
+    @GetMapping("/stream/{userId}")
+    public Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts(@PathVariable Integer userId) {
+        return bookService.streamPosts(userId);
     }
 
     @PostMapping("/get-explore-page")
@@ -43,13 +42,14 @@ public class BookController
         return new PageResponse<List<BookResponse>>().result(result.getContent()).dataCount(result.getTotalElements());
     }
 
-    @GetMapping("/detail-with-token/{bookId}")
-    public ApiResponse<BookDetailResponse> getBookById(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("bookId") Integer bookId)
-    {
-        String token = authorizationHeader.substring(7); // Lấy token từ header
+    @GetMapping("/detail-with-userid/{bookId}")
+    public ApiResponse<BookDetailResponse> getBookById (
+            @PathVariable("bookId") Integer bookId,
+            @RequestParam Integer userId
+    ) {
         ApiResponse<BookDetailResponse> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
-        apiResponse.setResult(bookService.getBookDetailByIdWithToken(token, bookId));
+        apiResponse.setResult(bookService.getBookDetailByIdWithUserId(userId, bookId));
         return apiResponse;
     }
 
