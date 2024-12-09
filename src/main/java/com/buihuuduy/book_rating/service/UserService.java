@@ -9,6 +9,8 @@ import java.util.List;
 @Service
 public interface UserService
 {
+    Integer getIdByToken(String token);
+
     void updateUser(Integer userId, UserEntityRequest userEntityRequest);
 
     List<AccountResponse> getFollowingAccountByUser(Integer userId);
