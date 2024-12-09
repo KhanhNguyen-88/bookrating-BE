@@ -200,14 +200,11 @@ public class BookServiceImpl implements BookService
     }
 
     @Override
-    public BookDetailResponse getBookDetailByIdWithToken(String token, Integer bookId)
+        public BookDetailResponse getBookDetailByIdWithUserId(Integer userId, Integer bookId)
     {
-        String username = CommonFunction.getUsernameFromToken(token);
-        UserEntity userEntity = userRepository.findByUsername(username);
-
         BookDetailResponse bookDetailPageResponse = new BookDetailResponse();
 
-        BookResponse bookResponse = convertBookResponseDetail(bookRepository.getBookResponseByBookIdWithToken(userEntity.getId(), bookId));
+        BookResponse bookResponse = convertBookResponseDetail(bookRepository.getBookResponseByBookIdWithToken(userId, bookId));
 
         bookDetailPageResponse.setBookResponse(bookResponse);
 
@@ -378,14 +375,14 @@ public class BookServiceImpl implements BookService
     }
 
     @Override
-    public List<BookDetailResponse> getBookListOnHomePage(String token)
+    public List<BookDetailResponse> getBookListOnHomePage(Integer userId)
     {
         List<BookEntity> bookEntityList = bookRepository.findAllOrderByIdDesc();
 
         List<BookDetailResponse> bookDetailResponseList = new ArrayList<>();
 
         for(BookEntity bookEntity : bookEntityList) {
-            BookDetailResponse bookDetailResponse = getBookDetailByIdWithToken(token, bookEntity.getId());
+            BookDetailResponse bookDetailResponse = getBookDetailByIdWithUserId(userId, bookEntity.getId());
             bookDetailResponseList.add(bookDetailResponse);
         }
 
@@ -393,11 +390,11 @@ public class BookServiceImpl implements BookService
     }
 
     @Override
-    public Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts(String token) {
+    public Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts(Integer userId) {
         return Flux.interval(Duration.ofSeconds(2))
                 .publishOn(Schedulers.boundedElastic())
                 .map(sequence -> ServerSentEvent.<List<BookDetailResponse>>builder().id(String.valueOf(sequence))
-                        .event("post-list-event").data(getBookListOnHomePage(token))
+                        .event("post-list-event").data(getBookListOnHomePage(userId))
                         .build());
     }
 }

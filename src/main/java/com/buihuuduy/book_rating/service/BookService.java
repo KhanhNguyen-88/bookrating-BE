@@ -17,11 +17,11 @@ import java.util.List;
 @Service
 public interface BookService
 {
-    Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts(String token);
+    Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts(Integer userId);
 
     Page<BookResponse> getBooksInExplorePage(PageFilterInput<ExplorePageFilter> input, Pageable pageable);
 
-    BookDetailResponse getBookDetailByIdWithToken(String token, Integer bookId);
+    BookDetailResponse getBookDetailByIdWithUserId(Integer userId, Integer bookId);
 
     List<String> getAuthorsRecommendation(String input);
 
@@ -35,5 +35,5 @@ public interface BookService
 
     void commentBook(String token, CommentRequest commentRequest);
 
-    List<BookDetailResponse> getBookListOnHomePage(String token);
+    List<BookDetailResponse> getBookListOnHomePage(Integer userId);
 }
