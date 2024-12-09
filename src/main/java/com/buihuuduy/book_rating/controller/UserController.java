@@ -135,4 +135,13 @@ public class UserController {
         }
         return apiResponse;
     }
+
+    @GetMapping("get-id-by-token")
+    public ApiResponse<Integer> getUserIdByToken(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        ApiResponse<Integer> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(userService.getIdByToken(token));
+        apiResponse.setCode(200);
+        return apiResponse;
+    }
 }

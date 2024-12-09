@@ -34,6 +34,13 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
+    public Integer getIdByToken(String token) {
+        String username = CommonFunction.getUsernameFromToken(token);
+        UserEntity user = userRepository.findByUsername(username);
+        return user.getId();
+    }
+
+    @Override
     public void updateUser(Integer userId, UserEntityRequest userEntityRequest)
     {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
