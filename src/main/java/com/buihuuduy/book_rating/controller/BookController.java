@@ -29,7 +29,7 @@ public class BookController
         this.bookService = bookService;
     }
 
-    @CrossOrigin(origins = "http://localhost:63342")
+//    @CrossOrigin(origins = "http://localhost:63342")
     @GetMapping("/stream")
     public Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts() {
         return bookService.streamPosts();
@@ -89,7 +89,7 @@ public class BookController
         return apiResponse;
     }
 
-    @CrossOrigin(origins = "http://localhost:63342")
+//    @CrossOrigin(origins = "http://localhost:63342")
     @PostMapping("/up-book")
     public ApiResponse<?> upBook(@RequestHeader("Authorization") String authorizationHeader, @RequestBody BookRequestDTO bookRequestDTO)
     {
