@@ -80,12 +80,23 @@ public class BookController
         return apiResponse;
     }
 
+    // Favorite book
     @GetMapping("/get-book-by-userId/{userId}")
     public ApiResponse<List<BookResponse>> getFavoriteBookByUserId(@PathVariable Integer userId)
     {
         ApiResponse<List<BookResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
         apiResponse.setResult(bookService.getFavoriteBookByUserId(userId));
+        return apiResponse;
+    }
+
+    // My book
+    @GetMapping("/get-my-book-by-userId/{userId}")
+    public ApiResponse<List<BookResponse>> getMyBookByUserId(@PathVariable Integer userId)
+    {
+        ApiResponse<List<BookResponse>> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setResult(bookService.getMyBookByUserId(userId));
         return apiResponse;
     }
 

@@ -200,6 +200,19 @@ public class UserServiceImpl implements UserService
         return getUserDetailInfo(userEntity.getId());
     }
 
+    @Override
+    public List<UserEntity> getAllUser() {
+        return userRepository.findAllByIsActiveIsTrue();
+    }
+
+    @Override
+    public void deleteUser(Integer userId) {
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
+        );
+        userRepository.delete(userEntity);
+    }
+
     public Long introspectFollowBack(Integer followingAccountId, Integer followerAccountId){
         return userRepository.introspectFollowBack(followingAccountId, followerAccountId);
     }

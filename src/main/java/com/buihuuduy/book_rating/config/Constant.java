@@ -9,6 +9,8 @@ public class Constant
         "/api/user/detail/{userId}",
         "/api/user/following-account/{userId}",
         "/api/user/follower-account/{userId}",
+        "/api/user/get-all",
+        "/api/user/delete/{userId}",
 
         "/api/book/get-explore-page",
         "/api/book/{bookId}",
@@ -16,7 +18,7 @@ public class Constant
         "/api/book/get-posted-by-username/{username}",
         "/api/book/search-common/{text}",
         "/api/book/get-book-by-userId/{userId}",
-        "/api/book/get-book-by-userId/1",
+        "/api/book/get-my-book-by-userId/{userId}",
         "/api/book/get-list-book-detail",
         "/api/book/stream/{userId}",
         "/api/book/detail-with-userid/{bookId}",

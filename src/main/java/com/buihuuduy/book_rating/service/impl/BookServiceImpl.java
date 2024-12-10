@@ -312,7 +312,34 @@ public class BookServiceImpl implements BookService
                 .append("FROM book b ")
                 .append("JOIN favorite_book fb on b.id = fb.book_id ")
                 .append("JOIN user u on u.id = fb.user_id ")
-                .append("WHERE fb.user_id = ").append(userId);
+                .append("WHERE fb.user_id = ").append(userId)
+                .append(" ORDER BY b.id DESC");
+
+        Query query = entityManager.createNativeQuery(sql.toString());
+        List<Object[]> results = query.getResultList();
+        List<BookResponse> bookResponseList = new ArrayList<>();
+        for(Object[] result : results)
+        {
+            BookResponse bookResponse = new BookResponse();
+            bookResponse.setId((Integer) result[0]);
+            bookResponse.setBookName((String) result[1]);
+            bookResponse.setBookImage((String) result[2]);
+            bookResponseList.add(bookResponse);
+        }
+        return bookResponseList;
+    }
+
+    @Override
+    public List<BookResponse> getMyBookByUserId(Integer userId)
+    {
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT ")
+                .append("   b.id, b.book_name, b.book_image ")
+                .append("FROM book b ")
+                .append("JOIN user u ON b.created_by = u.username ")
+                .append("WHERE u.id = ").append(userId)
+                .append(" ORDER BY b.id DESC");
 
         Query query = entityManager.createNativeQuery(sql.toString());
         List<Object[]> results = query.getResultList();

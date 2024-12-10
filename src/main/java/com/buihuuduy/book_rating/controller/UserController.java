@@ -4,6 +4,7 @@ import com.buihuuduy.book_rating.DTO.ApiResponse;
 import com.buihuuduy.book_rating.DTO.request.UserEntityRequest;
 import com.buihuuduy.book_rating.DTO.response.AccountResponse;
 import com.buihuuduy.book_rating.DTO.response.UserDetailResponse;
+import com.buihuuduy.book_rating.entity.UserEntity;
 import com.buihuuduy.book_rating.exception.SuccessCode;
 import com.buihuuduy.book_rating.service.UserService;
 import jakarta.validation.Valid;
@@ -155,6 +156,25 @@ public class UserController {
         String token = authorizationHeader.substring(7);
         ApiResponse<Integer> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userService.getIdByToken(token));
+        apiResponse.setCode(200);
+        return apiResponse;
+    }
+
+    @GetMapping("/get-all")
+    public ApiResponse<List<UserEntity>> getAllUserOnAdminPage()
+    {
+        ApiResponse<List<UserEntity>> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(userService.getAllUser());
+        apiResponse.setCode(200);
+        return apiResponse;
+    }
+
+    @GetMapping("/delete/{userId}")
+    public ApiResponse<?> deleteUser(@PathVariable Integer userId)
+    {
+        userService.deleteUser(userId);
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+        apiResponse.setMessage("Xóa người dùng thành công");
         apiResponse.setCode(200);
         return apiResponse;
     }
