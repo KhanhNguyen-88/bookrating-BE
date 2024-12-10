@@ -28,6 +28,7 @@ public class Constant
         "/api/category/add",
         "/api/feedback/add",
         "/api/feedback/stream",
+        "/api/book/detail-with-userid/{bookId}",
 
         "/ws/**",
         "/api/book/stream/{userId}"
