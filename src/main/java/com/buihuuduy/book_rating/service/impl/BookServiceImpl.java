@@ -368,8 +368,10 @@ public class BookServiceImpl implements BookService
         commentEntity.setRating(commentRequest.getRating());
 
         String username = CommonFunction.getUsernameFromToken(token);
+        UserEntity userEntity = userRepository.findByUsername(username);
         commentEntity.setCreatedBy(username);
         commentEntity.setCreatedAt(LocalDateTime.now());
+        commentEntity.setUserId(userEntity.getId());
 
         commentRepository.save(commentEntity);
     }
