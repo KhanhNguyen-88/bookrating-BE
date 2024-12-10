@@ -169,6 +169,14 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
+    public void unMarkFavorites(String token, Integer bookId) {
+        String currentUsername = CommonFunction.getUsernameFromToken(token);
+        UserEntity currentUser = userRepository.findByUsername(currentUsername);
+        FavoriteBookEntity favoriteBookEntity = favoriteBookRepository.findByUserIdAndBookId(currentUser.getId(), bookId);
+        favoriteBookRepository.delete(favoriteBookEntity);
+    }
+
+    @Override
     public List<AccountResponse> getFollowingAccountByToken(String token) {
         String username = CommonFunction.getUsernameFromToken(token);
         UserEntity userEntity = userRepository.findByUsername(username);
@@ -190,6 +198,19 @@ public class UserServiceImpl implements UserService
         UserEntity userEntity = userRepository.findByUsername(username);
         if(userEntity == null) throw new CustomException(ErrorCode.USER_NOT_FOUND);
         return getUserDetailInfo(userEntity.getId());
+    }
+
+    @Override
+    public List<UserEntity> getAllUser() {
+        return userRepository.findAllByIsActiveIsTrue();
+    }
+
+    @Override
+    public void deleteUser(Integer userId) {
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
+        );
+        userRepository.delete(userEntity);
     }
 
     public Long introspectFollowBack(Integer followingAccountId, Integer followerAccountId){

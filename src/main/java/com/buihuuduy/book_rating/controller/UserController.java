@@ -4,6 +4,7 @@ import com.buihuuduy.book_rating.DTO.ApiResponse;
 import com.buihuuduy.book_rating.DTO.request.UserEntityRequest;
 import com.buihuuduy.book_rating.DTO.response.AccountResponse;
 import com.buihuuduy.book_rating.DTO.response.UserDetailResponse;
+import com.buihuuduy.book_rating.entity.UserEntity;
 import com.buihuuduy.book_rating.exception.SuccessCode;
 import com.buihuuduy.book_rating.service.UserService;
 import jakarta.validation.Valid;
@@ -94,6 +95,20 @@ public class UserController {
         return apiResponse;
     }
 
+    @PostMapping("/unmark-favorite-book/{bookId}")
+    public ApiResponse<?> unmarkAsFavorite(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Integer bookId) {
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7); // Lấy token từ header
+            userService.unMarkFavorites(token, bookId);
+            apiResponse.setCode(200);
+        } else {
+            apiResponse.setCode(401);
+            apiResponse.setMessage("Authorization header is invalid");
+        }
+        return apiResponse;
+    }
+
     @GetMapping("/following-account-by-token")
     public ApiResponse<List<AccountResponse>> getFollowingAccountByToken(@RequestHeader("Authorization") String authorizationHeader) {
         ApiResponse<List<AccountResponse>> apiResponse = new ApiResponse<>();
@@ -141,6 +156,25 @@ public class UserController {
         String token = authorizationHeader.substring(7);
         ApiResponse<Integer> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userService.getIdByToken(token));
+        apiResponse.setCode(200);
+        return apiResponse;
+    }
+
+    @GetMapping("/get-all")
+    public ApiResponse<List<UserEntity>> getAllUserOnAdminPage()
+    {
+        ApiResponse<List<UserEntity>> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(userService.getAllUser());
+        apiResponse.setCode(200);
+        return apiResponse;
+    }
+
+    @GetMapping("/delete/{userId}")
+    public ApiResponse<?> deleteUser(@PathVariable Integer userId)
+    {
+        userService.deleteUser(userId);
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+        apiResponse.setMessage("Xóa người dùng thành công");
         apiResponse.setCode(200);
         return apiResponse;
     }

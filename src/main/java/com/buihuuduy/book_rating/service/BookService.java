@@ -31,6 +31,8 @@ public interface BookService
 
     List<BookResponse> getFavoriteBookByUserId(Integer userId);
 
+    List<BookResponse> getMyBookByUserId(Integer userId);
+
     void upBook(String token, BookRequestDTO bookRequestDTO);
 
     void commentBook(String token, CommentRequest commentRequest);

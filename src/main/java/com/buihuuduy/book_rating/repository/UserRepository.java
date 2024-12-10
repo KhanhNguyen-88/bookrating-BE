@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer>
 {
@@ -14,4 +16,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer>
     UserEntity findByUsername(String username);
     @Query("SELECT COUNT(*) FROM FollowingAccountEntity f WHERE  f.followedAccountId = :followingId and f.followerAccountId = :followerId and f.isActive = true ")
     Long introspectFollowBack(@Param("followingId") Integer followingId, @Param("followerId") Integer followerId);
+
+    List<UserEntity> findAllByIsActiveIsTrue();
 }
