@@ -145,6 +145,14 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
+    public void unMarkFavorites(String token, Integer bookId) {
+        String currentUsername = CommonFunction.getUsernameFromToken(token);
+        UserEntity currentUser = userRepository.findByUsername(currentUsername);
+        FavoriteBookEntity favoriteBookEntity = favoriteBookRepository.findByUserIdAndBookId(currentUser.getId(), bookId);
+        favoriteBookRepository.delete(favoriteBookEntity);
+    }
+
+    @Override
     public List<AccountResponse> getFollowingAccountByToken(String token) {
         String username = CommonFunction.getUsernameFromToken(token);
         UserEntity userEntity = userRepository.findByUsername(username);
