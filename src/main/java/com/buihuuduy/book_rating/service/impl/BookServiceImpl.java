@@ -200,7 +200,7 @@ public class BookServiceImpl implements BookService
     }
 
     @Override
-        public BookDetailResponse getBookDetailByIdWithUserId(Integer userId, Integer bookId)
+    public BookDetailResponse getBookDetailByIdWithUserId(Integer userId, Integer bookId)
     {
         BookDetailResponse bookDetailPageResponse = new BookDetailResponse();
 
