@@ -94,6 +94,20 @@ public class UserController {
         return apiResponse;
     }
 
+    @PostMapping("/unmark-favorite-book/{bookId}")
+    public ApiResponse<?> unmarkAsFavorite(@RequestHeader("Authorization") String authorizationHeader, @PathVariable Integer bookId) {
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7); // Lấy token từ header
+            userService.unMarkFavorites(token, bookId);
+            apiResponse.setCode(200);
+        } else {
+            apiResponse.setCode(401);
+            apiResponse.setMessage("Authorization header is invalid");
+        }
+        return apiResponse;
+    }
+
     @GetMapping("/following-account-by-token")
     public ApiResponse<List<AccountResponse>> getFollowingAccountByToken(@RequestHeader("Authorization") String authorizationHeader) {
         ApiResponse<List<AccountResponse>> apiResponse = new ApiResponse<>();

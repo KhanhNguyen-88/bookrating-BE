@@ -25,6 +25,8 @@ public interface UserService
 
     void markAsFavorite(String token, Integer bookId);
 
+    void unMarkFavorites(String token, Integer bookId);
+
     List<AccountResponse> getFollowingAccountByToken(String token);
 
     List<AccountResponse> getFollowerAccountByToken(String token);
