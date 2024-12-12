@@ -1,9 +1,10 @@
 package com.buihuuduy.book_rating.controller;
 
 import com.buihuuduy.book_rating.DTO.ApiResponse;
-import com.buihuuduy.book_rating.DTO.request.UserEntityRequest;
+import com.buihuuduy.book_rating.DTO.request.UserInfoRequest;
 import com.buihuuduy.book_rating.DTO.response.AccountResponse;
 import com.buihuuduy.book_rating.DTO.response.UserDetailResponse;
+import com.buihuuduy.book_rating.DTO.response.UserInfoResponse;
 import com.buihuuduy.book_rating.entity.UserEntity;
 import com.buihuuduy.book_rating.exception.SuccessCode;
 import com.buihuuduy.book_rating.service.UserService;
@@ -20,8 +21,23 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping("/detail-by-token")
+    public ApiResponse<UserInfoResponse> getUserOnDetailPage(@RequestHeader("Authorization") String authorizationHeader)
+    {
+        ApiResponse<UserInfoResponse> apiResponse = new ApiResponse<>();
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+            apiResponse.setResult(userService.getUserInfoByToken(token));
+            apiResponse.setCode(200);
+        } else {
+            apiResponse.setCode(401);
+            apiResponse.setMessage("Authorization header is invalid");
+        }
+        return apiResponse;
+    }
+
     @PostMapping("/update/{userId}")
-    public ApiResponse<?> registerUser(@RequestBody @Valid UserEntityRequest user, @PathVariable int userId) {
+    public ApiResponse<?> registerUser(@RequestBody @Valid UserInfoRequest user, @PathVariable int userId) {
         userService.updateUser(userId, user);
         ApiResponse<?> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);

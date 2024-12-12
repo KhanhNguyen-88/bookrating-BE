@@ -1,8 +1,10 @@
 package com.buihuuduy.book_rating.service.impl;
 
 import com.buihuuduy.book_rating.DTO.request.UserEntityRequest;
+import com.buihuuduy.book_rating.DTO.request.UserInfoRequest;
 import com.buihuuduy.book_rating.DTO.response.AccountResponse;
 import com.buihuuduy.book_rating.DTO.response.UserDetailResponse;
+import com.buihuuduy.book_rating.DTO.response.UserInfoResponse;
 import com.buihuuduy.book_rating.entity.FavoriteBookEntity;
 import com.buihuuduy.book_rating.entity.FollowingAccountEntity;
 import com.buihuuduy.book_rating.entity.UserEntity;
@@ -41,11 +43,20 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public void updateUser(Integer userId, UserEntityRequest userEntityRequest)
+    public void updateUser(Integer userId, UserInfoRequest userInfoRequest)
     {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        userMapper.updateUser(userEntity, userEntityRequest);
+        userMapper.updateUser(userEntity, userInfoRequest);
         userRepository.save(userEntity);
+    }
+
+    @Override
+    public UserInfoResponse getUserInfoByToken(String token) {
+        String username = CommonFunction.getUsernameFromToken(token);
+        UserEntity userEntity = userRepository.findByUsername(username);
+        UserInfoResponse userInfoResponse = userMapper.toUserInfo(userEntity);
+        userInfoResponse.setUsername(userEntity.getUsername());
+        return userInfoResponse;
     }
 
     @Override
