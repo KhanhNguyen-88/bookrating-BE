@@ -52,6 +52,7 @@ public class AuthServiceImpl implements AuthService
 
         UserEntity userEntity = userMapper.toUser(userSignInRequest);
         userEntity.setCreatedAt(LocalDateTime.now());
+        userEntity.setIsAdmin(false);
 
         // Encode password
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
@@ -75,7 +76,7 @@ public class AuthServiceImpl implements AuthService
 
         String token = generateToken(userLoginRequest);
 
-        return AuthenticationResponse.builder().token(token).isAuthenticated(true).build();
+        return AuthenticationResponse.builder().token(token).isAdmin(userEntity.getIsAdmin()).build();
     }
 
     @Override

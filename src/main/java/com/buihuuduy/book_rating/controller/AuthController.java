@@ -20,11 +20,9 @@ import java.text.ParseException;
 public class AuthController
 {
     private final AuthService authService;
-    private final UserService userService;
 
-    public AuthController(AuthService authService, UserService userService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.userService = userService;
     }
 
     @PostMapping("/register")

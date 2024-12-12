@@ -33,6 +33,11 @@ public class BookController
         return bookService.streamPosts(userId);
     }
 
+    @GetMapping("/stream-admin-page")
+    public Flux<ServerSentEvent<List<BookResponse>>> streamAdminPosts() {
+        return bookService.streamPostsOnAdminPage();
+    }
+
     @PostMapping("/get-explore-page")
     public PageResponse<List<BookResponse>> getAllPublicDepartment(@RequestBody PageFilterInput<ExplorePageFilter> input) {
         Pageable pageable = input.getPageSize() == 0
@@ -131,14 +136,13 @@ public class BookController
         return apiResponse;
     }
 
-    // API Test
-//    @GetMapping("/get-list-book-detail")
-//    public ApiResponse<List<BookDetailResponse>> getBookListOnHomePage(@RequestHeader("Authorization") String authorizationHeader)
-//    {
-//        String token = authorizationHeader.substring(7);
-//        ApiResponse<List<BookDetailResponse>> apiResponse = new ApiResponse<>();
-//        apiResponse.setCode(200);
-//        apiResponse.setResult(bookService.getBookListOnHomePage(token));
-//        return apiResponse;
-//    }
+    @GetMapping("/admin-approve/{bookId}")
+    public ApiResponse<?> approveBook(@PathVariable Integer bookId)
+    {
+        bookService.approveBook(bookId);
+        ApiResponse<?> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setMessage("Duyệt sách thành công");
+        return apiResponse;
+    }
 }

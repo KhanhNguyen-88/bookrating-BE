@@ -19,6 +19,8 @@ public interface BookService
 {
     Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts(Integer userId);
 
+    Flux<ServerSentEvent<List<BookResponse>>> streamPostsOnAdminPage();
+
     Page<BookResponse> getBooksInExplorePage(PageFilterInput<ExplorePageFilter> input, Pageable pageable);
 
     BookDetailResponse getBookDetailByIdWithUserId(Integer userId, Integer bookId);
@@ -38,4 +40,6 @@ public interface BookService
     void commentBook(String token, CommentRequest commentRequest);
 
     List<BookDetailResponse> getBookListOnHomePage(Integer userId);
+
+    void approveBook(Integer bookId);
 }

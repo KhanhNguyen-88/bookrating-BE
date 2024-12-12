@@ -79,7 +79,7 @@ public class BookServiceImpl implements BookService
                 .append("LEFT JOIN book_language bl ON b.language_id = bl.id ")
                 .append("LEFT JOIN category c ON bc.category_id = c.id ")
                 .append("LEFT JOIN book_rating_db.feedback fb ON fb.book_id = b.id ")
-                .append("WHERE 1=1 ");
+                .append("WHERE 1=1 AND b.approval_status = 1 ");
 
         int paramIndex = 1;
 
@@ -280,7 +280,7 @@ public class BookServiceImpl implements BookService
                 .append("   b.book_name LIKE CONCAT('%', '").append(common).append("', '%') OR ")
                 .append("   b.book_author LIKE CONCAT('%', '").append(common).append("', '%') OR ")
                 .append("   c.cate_name LIKE CONCAT('%', '").append(common).append("', '%') ")
-                .append(") ")
+                .append(") AND b.approval_status = 1 ")
                 .append("GROUP BY ")
                 .append("   b.id, b.book_name, b.book_image, b.book_author");
 
@@ -313,6 +313,7 @@ public class BookServiceImpl implements BookService
                 .append("JOIN favorite_book fb on b.id = fb.book_id ")
                 .append("JOIN user u on u.id = fb.user_id ")
                 .append("WHERE fb.user_id = ").append(userId)
+                .append(" AND b.approval_status = 1 ")
                 .append(" ORDER BY b.id DESC");
 
         Query query = entityManager.createNativeQuery(sql.toString());
@@ -339,6 +340,7 @@ public class BookServiceImpl implements BookService
                 .append("FROM book b ")
                 .append("JOIN user u ON b.created_by = u.username ")
                 .append("WHERE u.id = ").append(userId)
+                .append(" AND b.approval_status = 1 ")
                 .append(" ORDER BY b.id DESC");
 
         Query query = entityManager.createNativeQuery(sql.toString());
@@ -368,7 +370,7 @@ public class BookServiceImpl implements BookService
         bookEntity.setBookFormat(bookRequestDTO.getBookFormat());
         bookEntity.setLanguageId(bookRequestDTO.getLanguageId());
         bookEntity.setBookAuthor(bookRequestDTO.getBookAuthor());
-        // waiting default is 0 when declare
+        bookEntity.setApprovalStatus(0);
 
         String username = CommonFunction.getUsernameFromToken(token);
         bookEntity.setCreatedBy(username);
@@ -419,11 +421,62 @@ public class BookServiceImpl implements BookService
     }
 
     @Override
+    public void approveBook(Integer bookId) {
+        BookEntity bookEntity = bookRepository.findById(bookId).orElseThrow(
+                () -> new CustomException(ErrorCode.BOOK_NOT_FOUND)
+        );
+        bookEntity.setApprovalStatus(1);
+        bookRepository.save(bookEntity);
+    }
+
+    @Override
     public Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts(Integer userId) {
         return Flux.interval(Duration.ofSeconds(2))
                 .publishOn(Schedulers.boundedElastic())
                 .map(sequence -> ServerSentEvent.<List<BookDetailResponse>>builder().id(String.valueOf(sequence))
                         .event("post-list-event").data(getBookListOnHomePage(userId))
                         .build());
+    }
+
+    @Override
+    public Flux<ServerSentEvent<List<BookResponse>>> streamPostsOnAdminPage() {
+        return Flux.interval(Duration.ofSeconds(2))
+                .publishOn(Schedulers.boundedElastic())
+                .map(sequence -> ServerSentEvent.<List<BookResponse>>builder().id(String.valueOf(sequence))
+                        .event("admin-post-list-event").data(getBookListOnAdminPage())
+                        .build());
+    }
+
+    private List<BookResponse> getBookListOnAdminPage()
+    {
+        List<BookEntity> bookEntityList = bookRepository.findAllOnAdminPage();
+
+        List<BookResponse> bookResponseList = new ArrayList<>();
+
+        for(BookEntity bookEntity : bookEntityList) {
+            BookResponse bookResponse = getBookResponseOnAdminPage(bookEntity.getId());
+            bookResponseList.add(bookResponse);
+        }
+
+        return bookResponseList;
+    }
+
+    private BookResponse getBookResponseOnAdminPage(Integer bookId)
+    {
+        BookResponse bookResponse = new BookResponse();
+
+        Object[] bookData = bookRepository.getBookResponseByBookIdOnAdminPage(bookId) ;
+        bookResponse.setId((Integer) bookData[0]);
+        bookResponse.setBookName((String) bookData[1]);
+        bookResponse.setBookDescription((String) bookData[2]);
+        bookResponse.setBookImage((String) bookData[3]);
+        bookResponse.setPublishedDate((Date) bookData[4]);
+        bookResponse.setBookFormat((String) bookData[5]);
+        bookResponse.setBookSaleLink((String) bookData[6]);
+        bookResponse.setLanguage((String) bookData[7]);
+        bookResponse.setBookAuthor((String) bookData[8]);
+        bookResponse.setCategoryName((String) bookData[9]);
+
+        return bookResponse;
     }
 }
