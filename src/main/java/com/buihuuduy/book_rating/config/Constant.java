@@ -11,6 +11,7 @@ public class Constant
         "/api/user/follower-account/{userId}",
         "/api/user/get-all",
         "/api/user/delete/{userId}",
+        "/api/user/update/{userId}",
 
         "/api/book/get-explore-page",
         "/api/book/{bookId}",
@@ -32,6 +33,9 @@ public class Constant
         "/api/feedback/add",
         "/api/feedback/stream",
         "/api/book/detail-with-userid/{bookId}",
+
+        "/api/file/upload",
+        "/api/file/preview/{fileName}",
 
         "/ws/**",
         "/api/book/stream/{userId}"

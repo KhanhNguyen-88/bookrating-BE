@@ -100,7 +100,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         const bookListContainer = document.getElementById("bookList");
 
-        const eventSource = new EventSource("http://localhost:8081/api/book/stream");
+        const eventSource = new EventSource("http://localhost:8081/api/book/stream/1");
 
         eventSource.addEventListener("post-list-event", (event) => {
             console.log("Dữ liệu nhận được từ SSE:", event.data);
@@ -128,7 +128,7 @@
                 // Đặt cấu trúc HTML cho mỗi sách
                 bookCard.innerHTML = `
                     <div class="book-info">
-<!--                        <img src="${bookInfo.bookImage}" alt="${bookInfo.bookName}" class="book-image">-->
+                        <img src="http://103.216.116.98:9000/book-rating/20241211212856_61718053.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=WPhfhPM8IQYt6Ibo1uUW%2F20241211%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241211T142937Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=477fa69a3c191f2f674f02711a1e75460dfd07c2c627449547606b2ae9742797" alt="${bookInfo.bookName}" class="book-image">
                         <p>${bookInfo.bookName}</p>
                         <p><strong>Tác giả:</strong> ${bookInfo.bookAuthor}</p>
                         <p><strong>Ngôn ngữ:</strong> ${bookInfo.language}</p>

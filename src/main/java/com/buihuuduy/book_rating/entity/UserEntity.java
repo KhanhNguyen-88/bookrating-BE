@@ -48,4 +48,7 @@ public class UserEntity extends AuditingEntity
 
     @Column(name = "user_link")
     String userLink;
+
+    @Column(name = "is_admin")
+    Boolean isAdmin;
 }

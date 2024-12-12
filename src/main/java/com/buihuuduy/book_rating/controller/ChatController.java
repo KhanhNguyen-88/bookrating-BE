@@ -1,4 +1,4 @@
-package com.buihuuduy.book_rating.config;
+package com.buihuuduy.book_rating.controller;
 
 import com.buihuuduy.book_rating.entity.ChatMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;

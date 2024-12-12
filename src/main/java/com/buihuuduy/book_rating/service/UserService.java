@@ -1,8 +1,10 @@
 package com.buihuuduy.book_rating.service;
 
 import com.buihuuduy.book_rating.DTO.request.UserEntityRequest;
+import com.buihuuduy.book_rating.DTO.request.UserInfoRequest;
 import com.buihuuduy.book_rating.DTO.response.AccountResponse;
 import com.buihuuduy.book_rating.DTO.response.UserDetailResponse;
+import com.buihuuduy.book_rating.DTO.response.UserInfoResponse;
 import com.buihuuduy.book_rating.entity.UserEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -12,7 +14,9 @@ public interface UserService
 {
     Integer getIdByToken(String token);
 
-    void updateUser(Integer userId, UserEntityRequest userEntityRequest);
+    void updateUser(Integer userId, UserInfoRequest userInfoRequest);
+
+    UserInfoResponse getUserInfoByToken(String token);
 
     List<AccountResponse> getFollowingAccountByUser(Integer userId);
 
