@@ -32,6 +32,9 @@ public class Constant
         "/api/feedback/add",
         "/api/feedback/stream",
 
+        "/api/file/upload",
+        "/api/file/preview/{fileName}",
+
         "/ws/**",
         "/api/book/stream/{userId}"
     };

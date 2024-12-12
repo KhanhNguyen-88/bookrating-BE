@@ -23,5 +23,10 @@ spring:
             enable: true
 
 jwt:
-  signerKey: "K7j0LshncymqxUzj5inOflDE4ooSNfWFxps6VzBhVyGB2HytlsWhywvHE6VYxifs
-"
+  signerKey: "K7j0LshncymqxUzj5inOflDE4ooSNfWFxps6VzBhVyGB2HytlsWhywvHE6VYxifs"
+
+minio:
+  url: http://103.216.116.98:9000
+  access-key: WPhfhPM8IQYt6Ibo1uUW
+  secret-key: KYok93vYK56btVdo7G1lz4NFwmt3PaubHQCulZCq
+  bucket-name: book-rating

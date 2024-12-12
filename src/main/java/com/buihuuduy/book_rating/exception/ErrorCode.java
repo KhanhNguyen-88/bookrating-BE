@@ -26,6 +26,7 @@ public enum ErrorCode
     BOOK_NOT_FOUND(404, "Không tìm thấy sách"),
     JWT_INVALID(400, "JWT không hợp lệ"),
     POST_NOT_FOUND(404, "Không tìm thấy bài đăng"),
+    DONT_CONVERT_MULTIPART(401, "Không thể convert multipart file"),
     ;
 
     Integer code;
