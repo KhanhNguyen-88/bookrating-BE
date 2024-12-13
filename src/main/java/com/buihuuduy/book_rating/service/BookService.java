@@ -19,7 +19,7 @@ public interface BookService
 {
     Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts(Integer userId);
 
-    Flux<ServerSentEvent<List<BookResponse>>> streamPostsOnAdminPage();
+    Flux<ServerSentEvent<List<BookDetailResponse>>> streamPostsOnAdminPage();
 
     Page<BookResponse> getBooksInExplorePage(PageFilterInput<ExplorePageFilter> input, Pageable pageable);
 

@@ -10,6 +10,7 @@ import java.util.Objects;
 @ControllerAdvice
 public class GlobalException
 {
+
     @ExceptionHandler(value = RuntimeException.class)
     ResponseEntity<String> handlingRuntimeException(RuntimeException runtimeException)
     {

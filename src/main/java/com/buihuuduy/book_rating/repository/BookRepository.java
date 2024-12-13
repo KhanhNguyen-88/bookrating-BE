@@ -1,5 +1,6 @@
 package com.buihuuduy.book_rating.repository;
 
+import com.buihuuduy.book_rating.DTO.response.BookResponse;
 import com.buihuuduy.book_rating.entity.BookEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,7 +27,7 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer>
             "b.book_image, b.published_date, b.book_format, " +
             "b.book_sale_link, l.language_name, b.book_author, " +
             "GROUP_CONCAT(c.cate_name ORDER BY c.cate_name SEPARATOR ', '), " +
-            "CEIL(AVG(fb.rating)), COUNT(fb.rating), b.created_at, u.full_name, " +
+            "CEIL(AVG(fb.rating)), COUNT(fb.rating), b.created_at, u.full_name, u.user_image, " +
             "CASE WHEN favorite_book.user_id IS NOT NULL THEN true ELSE false END "+
             "FROM book b " +
             "JOIN book_language l ON b.language_id = l.id " +
@@ -38,20 +39,22 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer>
             "WHERE b.id = :bookId AND b.approval_status = 1 " +
             "GROUP BY b.id, b.book_name, b.book_description, b.book_image, " +
             "b.published_date, b.book_format, b.book_sale_link, " +
-            "l.language_name, b.book_author, b.created_at, u.full_name; " , nativeQuery = true)
+            "l.language_name, b.book_author, b.created_at, u.full_name, u.user_image; " , nativeQuery = true)
     Object[] getBookResponseByBookIdWithToken(@Param("userId") Integer userId, @Param("bookId") Integer bookId);
 
     @Query(value = "SELECT b.id, b.book_name, b.book_description, " +
             "b.book_image, b.published_date, b.book_format, " +
             "b.book_sale_link, l.language_name, b.book_author, " +
             "GROUP_CONCAT(c.cate_name ORDER BY c.cate_name SEPARATOR ', '), " +
+            "b.created_at, u.full_name, u.user_image " +
             "FROM book b " +
             "JOIN book_language l ON b.language_id = l.id " +
             "JOIN book_category bc ON b.id = bc.book_id " +
             "JOIN category c ON bc.category_id = c.id " +
-            "WHERE b.id = :bookId AND b.approval_status = 1 " +
+            "LEFT JOIN user u ON b.created_by = u.username " +
+            "WHERE b.id = :bookId AND b.approval_status = 0 " +
             "GROUP BY b.id, b.book_name, b.book_description, b.book_image, " +
             "b.published_date, b.book_format, b.book_sale_link, " +
-            "l.language_name, b.book_author, b.created_at, u.full_name; " , nativeQuery = true)
-    Object[] getBookResponseByBookIdOnAdminPage(@Param("bookId") Integer bookId);
+            "l.language_name, b.book_author, b.created_at, u.full_name, u.user_image; " , nativeQuery = true)
+    Object[] getBookResponseByBookIdWithTokenAdminPage(@Param("bookId") Integer bookId);
 }

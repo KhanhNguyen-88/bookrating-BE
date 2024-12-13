@@ -21,7 +21,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/detail-by-token")
+    @PostMapping("/user-token")
     public ApiResponse<UserInfoResponse> getUserOnDetailPage(@RequestHeader("Authorization") String authorizationHeader)
     {
         ApiResponse<UserInfoResponse> apiResponse = new ApiResponse<>();
