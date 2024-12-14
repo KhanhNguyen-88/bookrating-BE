@@ -34,7 +34,7 @@ public class BookController
     }
 
     @GetMapping("/stream-admin-page")
-    public Flux<ServerSentEvent<List<BookResponse>>> streamAdminPosts() {
+    public Flux<ServerSentEvent<List<BookDetailResponse>>> streamAdminPosts() {
         return bookService.streamPostsOnAdminPage();
     }
 

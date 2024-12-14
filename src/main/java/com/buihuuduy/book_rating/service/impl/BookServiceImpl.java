@@ -175,8 +175,9 @@ public class BookServiceImpl implements BookService
         bookResponse.setTotalRating((Long) bookData[11]);
         bookResponse.setCreatedAt((Date) bookData[12]);
         bookResponse.setCreatedBy((String) bookData[13]);
+        bookResponse.setUserImage((String) bookData[14]);
         if (bookData[14] != null) {
-            bookResponse.setIsFavorite((Integer) bookData[14]);
+            bookResponse.setIsFavorite((Integer) bookData[15]);
         } else {
             bookResponse.setIsFavorite(0);
         }
@@ -439,33 +440,42 @@ public class BookServiceImpl implements BookService
     }
 
     @Override
-    public Flux<ServerSentEvent<List<BookResponse>>> streamPostsOnAdminPage() {
+    public Flux<ServerSentEvent<List<BookDetailResponse>>> streamPostsOnAdminPage() {
         return Flux.interval(Duration.ofSeconds(2))
                 .publishOn(Schedulers.boundedElastic())
-                .map(sequence -> ServerSentEvent.<List<BookResponse>>builder().id(String.valueOf(sequence))
-                        .event("admin-post-list-event").data(getBookListOnAdminPage())
+                .map(sequence -> ServerSentEvent.<List<BookDetailResponse>>builder().id(String.valueOf(sequence))
+                        .event("post-list-event").data(getBookListOnAdminPage())
                         .build());
     }
 
-    private List<BookResponse> getBookListOnAdminPage()
+    private List<BookDetailResponse> getBookListOnAdminPage()
     {
         List<BookEntity> bookEntityList = bookRepository.findAllOnAdminPage();
 
-        List<BookResponse> bookResponseList = new ArrayList<>();
+        List<BookDetailResponse> bookDetailResponseList = new ArrayList<>();
 
         for(BookEntity bookEntity : bookEntityList) {
-            BookResponse bookResponse = getBookResponseOnAdminPage(bookEntity.getId());
-            bookResponseList.add(bookResponse);
+            BookDetailResponse bookDetailResponse = getBookDetailByIdAdminPage(bookEntity.getId());
+            bookDetailResponseList.add(bookDetailResponse);
         }
 
-        return bookResponseList;
+        return bookDetailResponseList;
     }
 
-    private BookResponse getBookResponseOnAdminPage(Integer bookId)
+    public BookDetailResponse getBookDetailByIdAdminPage(Integer bookId)
     {
-        BookResponse bookResponse = new BookResponse();
+        BookDetailResponse bookDetailPageResponse = new BookDetailResponse();
+        BookResponse bookResponse = convertBookResponseDetailAdminPage(bookRepository.getBookResponseByBookIdWithTokenAdminPage( bookId));
 
-        Object[] bookData = bookRepository.getBookResponseByBookIdOnAdminPage(bookId) ;
+        bookDetailPageResponse.setBookResponse(bookResponse);
+        bookDetailPageResponse.setFeedbackResponseList(null);
+
+        return bookDetailPageResponse;
+    }
+
+    private static BookResponse convertBookResponseDetailAdminPage(Object[] result) {
+        BookResponse bookResponse = new BookResponse();
+        Object[] bookData = (Object[]) result[0] ;
         bookResponse.setId((Integer) bookData[0]);
         bookResponse.setBookName((String) bookData[1]);
         bookResponse.setBookDescription((String) bookData[2]);
@@ -476,7 +486,9 @@ public class BookServiceImpl implements BookService
         bookResponse.setLanguage((String) bookData[7]);
         bookResponse.setBookAuthor((String) bookData[8]);
         bookResponse.setCategoryName((String) bookData[9]);
-
+        bookResponse.setCreatedAt((Date) bookData[10]);
+        bookResponse.setCreatedBy((String) bookData[11]);
+        bookResponse.setUserImage((String) bookData[12]);
         return bookResponse;
     }
 }
