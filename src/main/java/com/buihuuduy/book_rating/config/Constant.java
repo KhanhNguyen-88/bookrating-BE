@@ -12,6 +12,7 @@ public class Constant
         "/api/user/get-all",
         "/api/user/delete/{userId}",
         "/api/user/update/{userId}",
+            "/api/user/detail-by-token",
 
         "/api/book/get-explore-page",
         "/api/book/{bookId}",
