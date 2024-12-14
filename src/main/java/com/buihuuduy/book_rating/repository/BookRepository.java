@@ -27,7 +27,7 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer>
             "b.book_image, b.published_date, b.book_format, " +
             "b.book_sale_link, l.language_name, b.book_author, " +
             "GROUP_CONCAT(c.cate_name ORDER BY c.cate_name SEPARATOR ', '), " +
-            "CEIL(AVG(fb.rating)), COUNT(fb.rating), b.created_at, u.full_name, u.user_image, " +
+            "CEIL(AVG(fb.rating)), COUNT(fb.rating), b.created_at, u.full_name, u.user_image, u.id, " +
             "CASE WHEN favorite_book.user_id IS NOT NULL THEN true ELSE false END "+
             "FROM book b " +
             "JOIN book_language l ON b.language_id = l.id " +
@@ -39,7 +39,7 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer>
             "WHERE b.id = :bookId AND b.approval_status = 1 " +
             "GROUP BY b.id, b.book_name, b.book_description, b.book_image, " +
             "b.published_date, b.book_format, b.book_sale_link, " +
-            "l.language_name, b.book_author, b.created_at, u.full_name, u.user_image; " , nativeQuery = true)
+            "l.language_name, b.book_author, b.created_at, u.full_name, u.user_image, u.id; " , nativeQuery = true)
     Object[] getBookResponseByBookIdWithToken(@Param("userId") Integer userId, @Param("bookId") Integer bookId);
 
     @Query(value = "SELECT b.id, b.book_name, b.book_description, " +

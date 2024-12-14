@@ -45,19 +45,5 @@ public class BookResponse
 
     String userImage;
 
-    public BookResponse(Integer id, String bookName, String bookDescription, String bookImage, Date publishedDate, String bookFormat, String bookSaleLink, String language, String bookAuthor, String categoryName, Date createdAt, String createdBy, String userImage) {
-        this.id = id;
-        this.bookName = bookName;
-        this.bookDescription = bookDescription;
-        this.bookImage = bookImage;
-        this.publishedDate = publishedDate;
-        this.bookFormat = bookFormat;
-        this.bookSaleLink = bookSaleLink;
-        this.language = language;
-        this.bookAuthor = bookAuthor;
-        this.categoryName = categoryName;
-        this.createdAt = createdAt;
-        this.createdBy = createdBy;
-        this.userImage = userImage;
-    }
+    Integer userId;
 }
