@@ -176,8 +176,9 @@ public class BookServiceImpl implements BookService
         bookResponse.setCreatedAt((Date) bookData[12]);
         bookResponse.setCreatedBy((String) bookData[13]);
         bookResponse.setUserImage((String) bookData[14]);
+        bookResponse.setUserId((Integer) bookData[15]);
         if (bookData[14] != null) {
-            bookResponse.setIsFavorite((Integer) bookData[15]);
+            bookResponse.setIsFavorite((Integer) bookData[16]);
         } else {
             bookResponse.setIsFavorite(0);
         }
