@@ -17,5 +17,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer>
     @Query("SELECT COUNT(*) FROM FollowingAccountEntity f WHERE  f.followedAccountId = :followingId and f.followerAccountId = :followerId and f.isActive = true ")
     Long introspectFollowBack(@Param("followingId") Integer followingId, @Param("followerId") Integer followerId);
 
-    List<UserEntity> findAllByIsActiveIsTrue();
+    List<UserEntity> findAllByIsActiveIsTrueAndIsAdminIsFalse();
 }

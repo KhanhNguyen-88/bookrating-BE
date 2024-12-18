@@ -1,19 +1,20 @@
 package com.buihuuduy.book_rating.DTO.response;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BookDetailResponse
+public class PercentFeedback
 {
-    BookResponse bookResponse;
+    int levelStar;
 
-    List<CommentResponse> feedbackResponseList;
+    int countStar;
 
-    List<PercentFeedback> percentFeedbackList;
+    double percent;
 }

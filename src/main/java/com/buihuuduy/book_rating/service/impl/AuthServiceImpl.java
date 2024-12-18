@@ -52,6 +52,8 @@ public class AuthServiceImpl implements AuthService
 
         UserEntity userEntity = userMapper.toUser(userSignInRequest);
         userEntity.setCreatedAt(LocalDateTime.now());
+        userEntity.setUserImage("20241214155031_user.png");
+        userEntity.setUserEmail(userSignInRequest.getEmail());
         userEntity.setIsAdmin(false);
 
         // Encode password
@@ -114,6 +116,5 @@ public class AuthServiceImpl implements AuthService
         } catch (JOSEException e) {
             throw new RuntimeException(e);
         }
-
     }
 }
