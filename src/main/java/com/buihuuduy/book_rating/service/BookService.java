@@ -42,6 +42,4 @@ public interface BookService
     List<BookDetailResponse> getBookListOnHomePage(Integer userId);
 
     void approveBook(Integer bookId);
-
-    List<BookResponse> getBookInFavoriteRanking();
 }

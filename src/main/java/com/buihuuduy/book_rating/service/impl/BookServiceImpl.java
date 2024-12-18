@@ -34,8 +34,6 @@ import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
-
-import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -255,8 +253,7 @@ public class BookServiceImpl implements BookService
             }
             for (int i = 1; i <= 5; i++) {
                 int count = percentFeedbackMap.getOrDefault(i, 0);
-                DecimalFormat df = new DecimalFormat("#.##");
-                double percent = Double.parseDouble(df.format(feedbackResponseList.isEmpty() ? 0 : (count * 100.0) / feedbackResponseList.size())); // Tính phần trăm
+                double percent = feedbackResponseList.isEmpty() ? 0 : (count * 100.0) / feedbackResponseList.size(); // Tính phần trăm
                 percentFeedbackList.add(new PercentFeedback(i, count, percent));
             }
             bookDetailPageResponse.setPercentFeedbackList(percentFeedbackList);
@@ -449,32 +446,6 @@ public class BookServiceImpl implements BookService
         );
         bookEntity.setApprovalStatus(1);
         bookRepository.save(bookEntity);
-    }
-
-    @Override
-    public List<BookResponse> getBookInFavoriteRanking() {
-        StringBuilder sql = new StringBuilder();
-
-        sql.append("SELECT ")
-                .append("b.id, b.book_image, COUNT(favorite_book.user_id) AS favorite_number ")
-                .append("FROM book b ")
-                .append("LEFT JOIN favorite_book ON favorite_book.book_id = b.id ")
-                .append("GROUP BY b.id, b.book_image ")
-                .append("ORDER BY favorite_number DESC ")
-                .append("LIMIT 10");
-                ;
-
-        Query query = entityManager.createNativeQuery(sql.toString());
-        List<Object[]> results = query.getResultList();
-        List<BookResponse> bookResponseList = new ArrayList<>();
-        for(Object[] result : results)
-        {
-            BookResponse bookResponse = new BookResponse();
-            bookResponse.setId((Integer) result[0]);
-            bookResponse.setBookImage((String) result[1]);
-            bookResponseList.add(bookResponse);
-        }
-        return bookResponseList;
     }
 
     @Override
