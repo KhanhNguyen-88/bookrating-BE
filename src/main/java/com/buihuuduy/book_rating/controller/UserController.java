@@ -45,6 +45,7 @@ public class UserController {
         return apiResponse;
     }
 
+    // Show detail different profile by id
     @GetMapping("/detail/{userId}")
     public ApiResponse<UserDetailResponse> getUserDetailInfo(@PathVariable int userId) {
         ApiResponse<UserDetailResponse> apiResponse = new ApiResponse<>();

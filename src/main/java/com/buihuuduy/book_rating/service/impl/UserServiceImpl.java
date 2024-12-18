@@ -213,7 +213,7 @@ public class UserServiceImpl implements UserService
 
     @Override
     public List<UserEntity> getAllUser() {
-        return userRepository.findAllByIsActiveIsTrue();
+        return userRepository.findAllByIsActiveIsTrueAndIsAdminIsFalse();
     }
 
     @Override

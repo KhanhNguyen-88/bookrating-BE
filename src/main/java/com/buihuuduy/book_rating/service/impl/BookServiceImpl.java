@@ -7,6 +7,7 @@ import com.buihuuduy.book_rating.DTO.request.ExplorePageFilter;
 import com.buihuuduy.book_rating.DTO.response.BookDetailResponse;
 import com.buihuuduy.book_rating.DTO.response.BookResponse;
 import com.buihuuduy.book_rating.DTO.response.CommentResponse;
+import com.buihuuduy.book_rating.DTO.response.PercentFeedback;
 import com.buihuuduy.book_rating.entity.BookCategoryEntity;
 import com.buihuuduy.book_rating.entity.BookEntity;
 import com.buihuuduy.book_rating.entity.CommentEntity;
@@ -35,9 +36,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BookServiceImpl implements BookService
@@ -226,10 +225,10 @@ public class BookServiceImpl implements BookService
         Query query = entityManager.createNativeQuery(sql.toString());
 
         List<Object[]> results = query.getResultList();
+        List<CommentResponse> feedbackResponseList = new ArrayList<>();
         if (results == null || results.isEmpty()) {
             bookDetailPageResponse.setFeedbackResponseList(null);
         } else {
-            List<CommentResponse> feedbackResponseList = new ArrayList<>();
             for (Object[] result : results) {
                 CommentResponse feedbackResponse = new CommentResponse();
                 feedbackResponse.setUserId((Integer) result[0]);
@@ -242,6 +241,24 @@ public class BookServiceImpl implements BookService
             }
             bookDetailPageResponse.setFeedbackResponseList(feedbackResponseList);
         }
+
+        if(bookDetailPageResponse.getFeedbackResponseList() != null)
+        {
+            List<PercentFeedback> percentFeedbackList = new ArrayList<>();
+            Map<Integer, Integer> percentFeedbackMap = new HashMap<>();
+            // Count feedback
+            for(CommentResponse commentResponse : feedbackResponseList) {
+                int star = commentResponse.getRating();
+                percentFeedbackMap.put(star, percentFeedbackMap.getOrDefault(star, 0) + 1);
+            }
+            for (int i = 1; i <= 5; i++) {
+                int count = percentFeedbackMap.getOrDefault(i, 0);
+                double percent = feedbackResponseList.isEmpty() ? 0 : (count * 100.0) / feedbackResponseList.size(); // Tính phần trăm
+                percentFeedbackList.add(new PercentFeedback(i, count, percent));
+            }
+            bookDetailPageResponse.setPercentFeedbackList(percentFeedbackList);
+        }
+
         return bookDetailPageResponse;
     }
 

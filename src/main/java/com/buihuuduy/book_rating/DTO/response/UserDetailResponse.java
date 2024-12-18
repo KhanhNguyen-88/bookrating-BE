@@ -22,4 +22,7 @@ public class UserDetailResponse
     Integer followerAccounts;
 
     Integer followingAccounts;
+
+    // Check this account which you follow
+    Boolean isFollowing;
 }
