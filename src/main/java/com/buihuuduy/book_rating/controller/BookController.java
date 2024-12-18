@@ -145,4 +145,13 @@ public class BookController
         apiResponse.setMessage("Duyệt sách thành công");
         return apiResponse;
     }
+
+    @GetMapping("/ranking-favorite")
+    public ApiResponse<List<BookResponse>> getBookInFavoriteRanking()
+    {
+        ApiResponse<List<BookResponse>> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setResult(bookService.getBookInFavoriteRanking());
+        return apiResponse;
+    }
 }
