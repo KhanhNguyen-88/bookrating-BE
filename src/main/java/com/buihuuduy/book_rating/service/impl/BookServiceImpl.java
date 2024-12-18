@@ -258,6 +258,7 @@ public class BookServiceImpl implements BookService
             }
             bookDetailPageResponse.setPercentFeedbackList(percentFeedbackList);
         }
+        else bookDetailPageResponse.setPercentFeedbackList(null);
 
         return bookDetailPageResponse;
     }
