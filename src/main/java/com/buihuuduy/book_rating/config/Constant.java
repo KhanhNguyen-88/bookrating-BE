@@ -23,6 +23,7 @@ public class Constant
         "/api/book/get-list-book-detail",
         "/api/book/stream/{userId}",
         "/api/book/detail-with-userid/{bookId}",
+        "/api/book/ranking-favorite",
 
         "/api/mail/send-code",
         "/api/mail/verify-code",
