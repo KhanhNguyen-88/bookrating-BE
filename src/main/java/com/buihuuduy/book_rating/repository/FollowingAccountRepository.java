@@ -18,4 +18,10 @@ public interface FollowingAccountRepository extends JpaRepository<FollowingAccou
     List<Integer> findAllFollowerAccountIdsByFollowingAccountId(@Param("yourAccountId") Integer yourAccountId);
 
     FollowingAccountEntity findByFollowerAccountIdAndFollowedAccountId(Integer followerAccountId, Integer followedAccountId);
+
+    @Query("SELECT COUNT(f) FROM FollowingAccountEntity f " +
+            "WHERE f.followerAccountId = :followerAccountId " +
+            "AND f.followedAccountId = :followedAccountId " +
+            "AND f.isActive = true")
+    Integer checkFollowStatus(@Param("followerAccountId") Integer followerAccountId, @Param("followedAccountId") Integer followedAccountId);
 }
