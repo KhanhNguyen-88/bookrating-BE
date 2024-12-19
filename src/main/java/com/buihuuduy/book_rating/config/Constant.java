@@ -6,7 +6,6 @@ public class Constant
     {
         "/api/user/register",
         "/api/user/login",
-        "/api/user/detail/{userId}",
         "/api/user/following-account/{userId}",
         "/api/user/follower-account/{userId}",
         "/api/user/get-all",

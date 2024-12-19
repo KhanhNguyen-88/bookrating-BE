@@ -11,6 +11,7 @@ import com.buihuuduy.book_rating.entity.UserEntity;
 import com.buihuuduy.book_rating.exception.CustomException;
 import com.buihuuduy.book_rating.exception.ErrorCode;
 import com.buihuuduy.book_rating.mapper.UserMapper;
+import com.buihuuduy.book_rating.repository.BookRepository;
 import com.buihuuduy.book_rating.repository.FavoriteBookRepository;
 import com.buihuuduy.book_rating.repository.FollowingAccountRepository;
 import com.buihuuduy.book_rating.repository.UserRepository;
@@ -27,12 +28,14 @@ public class UserServiceImpl implements UserService
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final FavoriteBookRepository favoriteBookRepository;
+    private final BookRepository bookRepository;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, FollowingAccountRepository followingAccountRepository, FavoriteBookRepository favoriteBookRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, FollowingAccountRepository followingAccountRepository, FavoriteBookRepository favoriteBookRepository, BookRepository bookRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.followingAccountRepository = followingAccountRepository;
         this.favoriteBookRepository = favoriteBookRepository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -114,16 +117,20 @@ public class UserServiceImpl implements UserService
 
     @Override
     // Xem thong tin ca nhan cua nguoi dung nao do
-    public UserDetailResponse getUserDetailInfo(Integer userId)
+    public UserDetailResponse getUserDetailInfo(String token, Integer userId)
     {
         UserDetailResponse userDetailResponse = new UserDetailResponse();
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
+        String username = CommonFunction.getUsernameFromToken(token);
+        UserEntity myAccount = userRepository.findByUsername(username);
+
+        userDetailResponse.setIsFollowing(followingAccountRepository.checkFollowStatus(myAccount.getId(), userEntity.getId()) > 0);
         userDetailResponse.setId(userEntity.getId());
         userDetailResponse.setUserName(userEntity.getUsername());
         userDetailResponse.setUserImage(userEntity.getUserImage());
-        // Thieu so luong bai post
+        userDetailResponse.setBookNumberPost(bookRepository.countBookByUsername(userEntity.getUsername()));
         userDetailResponse.setFollowingAccounts(getFollowingAccountByUser(userId).size());
         userDetailResponse.setFollowerAccounts(getFollowerAccountByUser(userId).size());
         return userDetailResponse;
@@ -150,7 +157,6 @@ public class UserServiceImpl implements UserService
             newFollowingAccountEntity.setFollowedAccountId(followedId);
             followingAccountRepository.save(newFollowingAccountEntity);
         }
-
     }
 
     @Override
@@ -208,7 +214,15 @@ public class UserServiceImpl implements UserService
         String username = CommonFunction.getUsernameFromToken(token);
         UserEntity userEntity = userRepository.findByUsername(username);
         if(userEntity == null) throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        return getUserDetailInfo(userEntity.getId());
+
+        UserDetailResponse userDetailResponse = new UserDetailResponse();
+        userDetailResponse.setId(userEntity.getId());
+        userDetailResponse.setUserName(userEntity.getUsername());
+        userDetailResponse.setUserImage(userEntity.getUserImage());
+        userDetailResponse.setBookNumberPost(bookRepository.countBookByUsername(username));
+        userDetailResponse.setFollowingAccounts(getFollowingAccountByUser(userEntity.getId()).size());
+        userDetailResponse.setFollowerAccounts(getFollowerAccountByUser(userEntity.getId()).size());
+        return userDetailResponse;
     }
 
     @Override

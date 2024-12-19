@@ -47,10 +47,12 @@ public class UserController {
 
     // Show detail different profile by id
     @GetMapping("/detail/{userId}")
-    public ApiResponse<UserDetailResponse> getUserDetailInfo(@PathVariable int userId) {
+    public ApiResponse<UserDetailResponse> getUserDetailInfo(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int userId)
+    {
+        String token = authorizationHeader.substring(7);
         ApiResponse<UserDetailResponse> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
-        apiResponse.setResult(userService.getUserDetailInfo(userId));
+        apiResponse.setResult(userService.getUserDetailInfo(token, userId));
         return apiResponse;
     }
 
