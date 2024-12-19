@@ -41,4 +41,6 @@ public interface UserService
     List<UserEntity> getAllUser();
 
     void deleteUser(Integer userId);
+
+    UserInfoResponse getUserInfoById(Integer userId);
 }

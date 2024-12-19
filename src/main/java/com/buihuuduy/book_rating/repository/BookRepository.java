@@ -60,4 +60,7 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer>
 
     @Query("SELECT COUNT(b) FROM BookEntity b WHERE b.createdBy = :username")
     Integer countBookByUsername(@Param("username") String username);
+
+    @Query("SELECT COUNT(b) FROM BookEntity b")
+    Integer countBook();
 }

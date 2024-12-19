@@ -154,4 +154,13 @@ public class BookController
         apiResponse.setResult(bookService.getBookInFavoriteRanking());
         return apiResponse;
     }
+
+    @GetMapping("/ranking-newest")
+    public ApiResponse<List<BookResponse>> getBookInNewestRanking()
+    {
+        ApiResponse<List<BookResponse>> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setResult(bookService.getBookInNewestRanking());
+        return apiResponse;
+    }
 }

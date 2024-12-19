@@ -11,6 +11,7 @@ public class Constant
         "/api/user/get-all",
         "/api/user/delete/{userId}",
         "/api/user/update/{userId}",
+        "/api/user/info-detail/{userId}",
 
         "/api/book/get-explore-page",
         "/api/book/{bookId}",
@@ -23,6 +24,7 @@ public class Constant
         "/api/book/stream/{userId}",
         "/api/book/detail-with-userid/{bookId}",
         "/api/book/ranking-favorite",
+        "/api/book/ranking-newest",
 
         "/api/mail/send-code",
         "/api/mail/verify-code",
@@ -30,6 +32,8 @@ public class Constant
         "/api/category/get-all",
         "/api/category/get-by-book",
         "/api/category/add",
+        "/api/category/chart",
+
         "/api/feedback/add",
         "/api/feedback/stream",
 
