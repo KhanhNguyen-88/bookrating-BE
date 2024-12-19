@@ -197,4 +197,14 @@ public class UserController {
         apiResponse.setCode(200);
         return apiResponse;
     }
+
+    // Admin check info detail each user
+    @GetMapping("/info-detail/{userId}")
+    public ApiResponse<UserInfoResponse> getUserDetailInfo(@PathVariable Integer userId)
+    {
+        ApiResponse<UserInfoResponse> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setResult(userService.getUserInfoById(userId));
+        return apiResponse;
+    }
 }

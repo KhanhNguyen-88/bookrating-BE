@@ -255,8 +255,8 @@ public class BookServiceImpl implements BookService
             }
             for (int i = 1; i <= 5; i++) {
                 int count = percentFeedbackMap.getOrDefault(i, 0);
-                DecimalFormat df = new DecimalFormat("#.##");
-                double percent = Double.parseDouble(df.format(feedbackResponseList.isEmpty() ? 0 : (count * 100.0) / feedbackResponseList.size())); // Tính phần trăm
+                double percent = feedbackResponseList.isEmpty() ? 0 : (count * 100.0) / feedbackResponseList.size(); // Tính phần trăm
+                percent = Double.parseDouble(String.format(Locale.US, "%.2f", percent));
                 percentFeedbackList.add(new PercentFeedback(i, count, percent));
             }
             bookDetailPageResponse.setPercentFeedbackList(percentFeedbackList);
@@ -464,6 +464,30 @@ public class BookServiceImpl implements BookService
                 .append("ORDER BY favorite_number DESC ")
                 .append("LIMIT 10");
                 ;
+
+        Query query = entityManager.createNativeQuery(sql.toString());
+        List<Object[]> results = query.getResultList();
+        List<BookResponse> bookResponseList = new ArrayList<>();
+        for(Object[] result : results)
+        {
+            BookResponse bookResponse = new BookResponse();
+            bookResponse.setId((Integer) result[0]);
+            bookResponse.setBookImage((String) result[1]);
+            bookResponseList.add(bookResponse);
+        }
+        return bookResponseList;
+    }
+
+    @Override
+    public List<BookResponse> getBookInNewestRanking() {
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT ")
+                .append("b.id, b.book_image ")
+                .append("FROM book b ")
+                .append("ORDER BY b.created_at DESC ")
+                .append("LIMIT 10");
+        ;
 
         Query query = entityManager.createNativeQuery(sql.toString());
         List<Object[]> results = query.getResultList();

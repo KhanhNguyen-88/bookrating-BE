@@ -5,16 +5,14 @@ import com.buihuuduy.book_rating.DTO.request.UserInfoRequest;
 import com.buihuuduy.book_rating.DTO.response.AccountResponse;
 import com.buihuuduy.book_rating.DTO.response.UserDetailResponse;
 import com.buihuuduy.book_rating.DTO.response.UserInfoResponse;
+import com.buihuuduy.book_rating.entity.CommentEntity;
 import com.buihuuduy.book_rating.entity.FavoriteBookEntity;
 import com.buihuuduy.book_rating.entity.FollowingAccountEntity;
 import com.buihuuduy.book_rating.entity.UserEntity;
 import com.buihuuduy.book_rating.exception.CustomException;
 import com.buihuuduy.book_rating.exception.ErrorCode;
 import com.buihuuduy.book_rating.mapper.UserMapper;
-import com.buihuuduy.book_rating.repository.BookRepository;
-import com.buihuuduy.book_rating.repository.FavoriteBookRepository;
-import com.buihuuduy.book_rating.repository.FollowingAccountRepository;
-import com.buihuuduy.book_rating.repository.UserRepository;
+import com.buihuuduy.book_rating.repository.*;
 import com.buihuuduy.book_rating.service.UserService;
 import com.buihuuduy.book_rating.service.utils.CommonFunction;
 import org.springframework.stereotype.Service;
@@ -29,13 +27,15 @@ public class UserServiceImpl implements UserService
     private final UserMapper userMapper;
     private final FavoriteBookRepository favoriteBookRepository;
     private final BookRepository bookRepository;
+    private final CommentRepository commentRepository;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, FollowingAccountRepository followingAccountRepository, FavoriteBookRepository favoriteBookRepository, BookRepository bookRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, FollowingAccountRepository followingAccountRepository, FavoriteBookRepository favoriteBookRepository, BookRepository bookRepository, CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.followingAccountRepository = followingAccountRepository;
         this.favoriteBookRepository = favoriteBookRepository;
         this.bookRepository = bookRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -235,7 +235,23 @@ public class UserServiceImpl implements UserService
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
+        List<FavoriteBookEntity> favoriteBookEntity = favoriteBookRepository.findAllByUserId(userEntity.getId());
+        favoriteBookRepository.deleteAll(favoriteBookEntity);
+        List<FollowingAccountEntity> followingAccountList = followingAccountRepository.findByUserId(userEntity.getId());
+        followingAccountRepository.deleteAll(followingAccountList);
+        List<CommentEntity> commentList = commentRepository.findByUserId(userEntity.getId());
+        commentRepository.deleteAll(commentList);
         userRepository.delete(userEntity);
+    }
+
+    @Override
+    public UserInfoResponse getUserInfoById(Integer userId) {
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
+        );
+        UserInfoResponse userInfoResponse = userMapper.toUserInfo(userEntity);
+        userInfoResponse.setUsername(userEntity.getUsername());
+        return userInfoResponse;
     }
 
     public Long introspectFollowBack(Integer followingAccountId, Integer followerAccountId){

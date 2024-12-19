@@ -44,4 +44,6 @@ public interface BookService
     void approveBook(Integer bookId);
 
     List<BookResponse> getBookInFavoriteRanking();
+
+    List<BookResponse> getBookInNewestRanking();
 }
