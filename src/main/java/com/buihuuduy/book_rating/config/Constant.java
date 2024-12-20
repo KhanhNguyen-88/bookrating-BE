@@ -37,6 +37,8 @@ public class Constant
         "/api/feedback/add",
         "/api/feedback/stream",
 
+        "/api/login-history/chart",
+
         "/api/file/upload",
         "/api/file/preview/{fileName}",
 
