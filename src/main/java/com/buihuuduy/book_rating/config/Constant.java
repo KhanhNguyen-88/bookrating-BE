@@ -22,7 +22,6 @@ public class Constant
         "/api/book/get-book-by-userId/{userId}",
         "/api/book/get-my-book-by-userId/{userId}",
         "/api/book/get-list-book-detail",
-        "/api/book/stream/{userId}",
         "/api/book/detail-with-userid/{bookId}",
         "/api/book/ranking-favorite",
 
@@ -38,8 +37,8 @@ public class Constant
 
         "/api/file/upload",
         "/api/file/preview/{fileName}",
-
+        "/api/book/stream/*",
         "/ws/**",
-        "/api/book/stream/{userId}"
+        "/api/book/stream-admin-page",
     };
 }

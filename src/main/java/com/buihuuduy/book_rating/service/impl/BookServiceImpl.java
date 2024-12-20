@@ -255,8 +255,8 @@ public class BookServiceImpl implements BookService
             }
             for (int i = 1; i <= 5; i++) {
                 int count = percentFeedbackMap.getOrDefault(i, 0);
-                DecimalFormat df = new DecimalFormat("#.##");
-                double percent = Double.parseDouble(df.format(feedbackResponseList.isEmpty() ? 0 : (count * 100.0) / feedbackResponseList.size())); // Tính phần trăm
+//                DecimalFormat df = new DecimalFormat("#.##");
+                double percent =(feedbackResponseList.isEmpty() ? 0 : (count * 100.0) / feedbackResponseList.size()); // Tính phần trăm
                 percentFeedbackList.add(new PercentFeedback(i, count, percent));
             }
             bookDetailPageResponse.setPercentFeedbackList(percentFeedbackList);
