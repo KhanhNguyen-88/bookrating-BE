@@ -3,10 +3,12 @@ package com.buihuuduy.book_rating.service.impl;
 import com.buihuuduy.book_rating.DTO.request.IntrospectRequest;
 import com.buihuuduy.book_rating.DTO.request.UserEntityRequest;
 import com.buihuuduy.book_rating.DTO.response.AuthenticationResponse;
+import com.buihuuduy.book_rating.entity.LoginHistory;
 import com.buihuuduy.book_rating.entity.UserEntity;
 import com.buihuuduy.book_rating.exception.CustomException;
 import com.buihuuduy.book_rating.exception.ErrorCode;
 import com.buihuuduy.book_rating.mapper.UserMapper;
+import com.buihuuduy.book_rating.repository.LoginHistoryRepository;
 import com.buihuuduy.book_rating.repository.UserRepository;
 import com.buihuuduy.book_rating.service.AuthService;
 import com.nimbusds.jose.*;
@@ -31,13 +33,15 @@ public class AuthServiceImpl implements AuthService
 {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final LoginHistoryRepository loginHistoryRepository;
 
     @Value("${jwt.signerKey}")
     private String signerKey;
 
-    public AuthServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+    public AuthServiceImpl(UserRepository userRepository, UserMapper userMapper, LoginHistoryRepository loginHistoryRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.loginHistoryRepository = loginHistoryRepository;
     }
 
     @Override
@@ -77,6 +81,9 @@ public class AuthServiceImpl implements AuthService
         }
 
         String token = generateToken(userLoginRequest);
+        LoginHistory loginHistory = new LoginHistory();
+        loginHistory.setUsername(userLoginRequest.getUsername());
+        loginHistoryRepository.save(loginHistory);
 
         return AuthenticationResponse.builder().token(token).isAdmin(userEntity.getIsAdmin()).build();
     }
