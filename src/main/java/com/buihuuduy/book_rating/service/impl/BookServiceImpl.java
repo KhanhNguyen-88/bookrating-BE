@@ -479,6 +479,30 @@ public class BookServiceImpl implements BookService
     }
 
     @Override
+    public List<BookResponse> getBookInNewestRanking() {
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT ")
+                .append("b.id, b.book_image ")
+                .append("FROM book b ")
+                .append("ORDER BY b.created_at DESC ")
+                .append("LIMIT 10");
+        ;
+
+        Query query = entityManager.createNativeQuery(sql.toString());
+        List<Object[]> results = query.getResultList();
+        List<BookResponse> bookResponseList = new ArrayList<>();
+        for(Object[] result : results)
+        {
+            BookResponse bookResponse = new BookResponse();
+            bookResponse.setId((Integer) result[0]);
+            bookResponse.setBookImage((String) result[1]);
+            bookResponseList.add(bookResponse);
+        }
+        return bookResponseList;
+    }
+
+    @Override
     public Flux<ServerSentEvent<List<BookDetailResponse>>> streamPosts(Integer userId) {
         return Flux.interval(Duration.ofSeconds(2))
                 .publishOn(Schedulers.boundedElastic())

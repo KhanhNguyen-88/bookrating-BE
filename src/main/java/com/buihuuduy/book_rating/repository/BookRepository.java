@@ -57,4 +57,10 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer>
             "b.published_date, b.book_format, b.book_sale_link, " +
             "l.language_name, b.book_author, b.created_at, u.full_name, u.user_image; " , nativeQuery = true)
     Object[] getBookResponseByBookIdWithTokenAdminPage(@Param("bookId") Integer bookId);
+
+    @Query("SELECT COUNT(b) FROM BookEntity b WHERE b.createdBy = :username")
+    Integer countBookByUsername(@Param("username") String username);
+
+    @Query("SELECT COUNT(b) FROM BookEntity b")
+    Integer countBook();
 }

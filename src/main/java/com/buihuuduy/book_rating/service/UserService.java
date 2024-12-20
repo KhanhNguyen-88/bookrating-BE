@@ -22,7 +22,7 @@ public interface UserService
 
     List<AccountResponse> getFollowerAccountByUser(Integer userId);
 
-    UserDetailResponse getUserDetailInfo(Integer userId);
+    UserDetailResponse getUserDetailInfo(String token, Integer userId);
 
     void followUser(String token, Integer followedId);
 
@@ -41,4 +41,6 @@ public interface UserService
     List<UserEntity> getAllUser();
 
     void deleteUser(Integer userId);
+
+    UserInfoResponse getUserInfoById(Integer userId);
 }
