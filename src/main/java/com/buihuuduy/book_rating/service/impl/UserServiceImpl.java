@@ -75,6 +75,7 @@ public class UserServiceImpl implements UserService
             accountResponse.setUserId(userEntity.getId());
             accountResponse.setUserName(userEntity.getUsername());
             accountResponse.setUserImage(userEntity.getUserImage());
+            accountResponse.setFullName(userEntity.getFullName());
 
 
             accountResponseList.add(accountResponse);

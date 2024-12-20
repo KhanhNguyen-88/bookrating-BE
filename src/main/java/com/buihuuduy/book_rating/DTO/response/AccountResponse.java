@@ -16,5 +16,7 @@ public class AccountResponse
 
     Integer userId;
 
+    String fullName;
+
     boolean followBack;
 }
