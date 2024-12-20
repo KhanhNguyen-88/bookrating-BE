@@ -3,7 +3,7 @@ package com.buihuuduy.book_rating.service.impl;
 import com.buihuuduy.book_rating.DTO.request.IntrospectRequest;
 import com.buihuuduy.book_rating.DTO.request.UserEntityRequest;
 import com.buihuuduy.book_rating.DTO.response.AuthenticationResponse;
-import com.buihuuduy.book_rating.entity.LoginHistory;
+import com.buihuuduy.book_rating.entity.LoginHistoryEntity;
 import com.buihuuduy.book_rating.entity.UserEntity;
 import com.buihuuduy.book_rating.exception.CustomException;
 import com.buihuuduy.book_rating.exception.ErrorCode;
@@ -14,8 +14,6 @@ import com.buihuuduy.book_rating.service.AuthService;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -81,9 +79,9 @@ public class AuthServiceImpl implements AuthService
         }
 
         String token = generateToken(userLoginRequest);
-        LoginHistory loginHistory = new LoginHistory();
-        loginHistory.setUsername(userLoginRequest.getUsername());
-        loginHistoryRepository.save(loginHistory);
+        LoginHistoryEntity loginHistoryEntity = new LoginHistoryEntity();
+        loginHistoryEntity.setUsername(userLoginRequest.getUsername());
+        loginHistoryRepository.save(loginHistoryEntity);
 
         return AuthenticationResponse.builder().token(token).isAdmin(userEntity.getIsAdmin()).build();
     }

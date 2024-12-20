@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LoginHistory
+public class LoginHistoryEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
