@@ -43,6 +43,9 @@ public class Constant
         "/api/file/upload",
         "/api/file/preview/{fileName}",
 
+        "/api/language/add",
+        "/api/language/get-all",
+
         "/ws/**",
         "/api/book/stream/{userId}"
     };
