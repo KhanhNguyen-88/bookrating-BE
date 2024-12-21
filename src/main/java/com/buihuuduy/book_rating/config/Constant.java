@@ -24,6 +24,7 @@ public class Constant
         "/api/book/detail-with-userid/{bookId}",
         "/api/book/ranking-favorite",
         "/api/book/ranking-newest",
+        "/api/book/chart",
 
         "/api/mail/send-code",
         "/api/mail/verify-code",
@@ -42,6 +43,10 @@ public class Constant
         "/api/file/upload",
         "/api/file/preview/{fileName}",
         "/api/book/stream/*",
+
+        "/api/language/add",
+        "/api/language/get-all",
+
         "/ws/**",
         "/api/book/stream-admin-page",
     };

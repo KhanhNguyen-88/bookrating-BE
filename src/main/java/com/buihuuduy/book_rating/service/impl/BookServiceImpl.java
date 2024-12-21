@@ -34,9 +34,8 @@ import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
-
-import java.text.DecimalFormat;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -500,6 +499,28 @@ public class BookServiceImpl implements BookService
             bookResponseList.add(bookResponse);
         }
         return bookResponseList;
+    }
+
+    @Override
+    public Map<Integer, Long> displayBookQuantityByMonth()
+    {
+        int currentYear = LocalDate.now().getYear();
+        List<Object[]> results = bookRepository.countBooksByMonth(currentYear);
+
+        // Convert data to map
+        Map<Integer, Long> bookQuantityByMonth = new HashMap<>();
+        for (Object[] result : results) {
+            Integer month = (Integer) result[0];
+            Long count = (Long) result[1];
+            bookQuantityByMonth.put(month, count);
+        }
+
+        // if a month don't have book set default 0
+        for (int i = 1; i <= 12; i++) {
+            bookQuantityByMonth.putIfAbsent(i, 0L);
+        }
+
+        return bookQuantityByMonth;
     }
 
     @Override

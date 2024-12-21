@@ -11,8 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface BookService
@@ -46,4 +46,6 @@ public interface BookService
     List<BookResponse> getBookInFavoriteRanking();
 
     List<BookResponse> getBookInNewestRanking();
+
+    Map<Integer, Long> displayBookQuantityByMonth();
 }
