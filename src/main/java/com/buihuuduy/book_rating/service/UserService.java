@@ -43,4 +43,6 @@ public interface UserService
     void deleteUser(Integer userId);
 
     UserInfoResponse getUserInfoById(Integer userId);
+
+
 }

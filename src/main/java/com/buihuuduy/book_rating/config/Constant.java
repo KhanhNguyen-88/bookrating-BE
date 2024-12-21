@@ -37,6 +37,8 @@ public class Constant
         "/api/feedback/stream",
         "/api/book/detail-with-userid/{bookId}",
 
+        "/api/login-history/chart",
+
         "/api/file/upload",
         "/api/file/preview/{fileName}",
         "/api/book/stream/*",
