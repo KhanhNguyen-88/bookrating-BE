@@ -63,4 +63,11 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer>
 
     @Query("SELECT COUNT(b) FROM BookEntity b")
     Integer countBook();
+
+    @Query("SELECT MONTH(b.createdAt) AS month, COUNT(b) AS count " +
+            "FROM BookEntity b " +
+            "WHERE YEAR(b.createdAt) = :currentYear " +
+            "GROUP BY MONTH(b.createdAt) " +
+            "ORDER BY MONTH(b.createdAt)")
+    List<Object[]> countBooksByMonth(@Param("currentYear") int currentYear);
 }
