@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/book")
@@ -161,6 +162,15 @@ public class BookController
         ApiResponse<List<BookResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
         apiResponse.setResult(bookService.getBookInNewestRanking());
+        return apiResponse;
+    }
+
+    @GetMapping("/chart")
+    public ApiResponse<Map<Integer, Long>> getBooksByMonth()
+    {
+        ApiResponse<Map<Integer, Long>> apiResponse = new ApiResponse<>();
+        apiResponse.setCode(200);
+        apiResponse.setResult(bookService.displayBookQuantityByMonth());
         return apiResponse;
     }
 }

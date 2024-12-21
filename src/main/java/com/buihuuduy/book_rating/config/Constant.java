@@ -25,6 +25,7 @@ public class Constant
         "/api/book/detail-with-userid/{bookId}",
         "/api/book/ranking-favorite",
         "/api/book/ranking-newest",
+        "/api/book/chart",
 
         "/api/mail/send-code",
         "/api/mail/verify-code",
