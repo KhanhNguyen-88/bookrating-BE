@@ -5,6 +5,7 @@ import com.buihuuduy.book_rating.DTO.response.CategoryChart;
 import com.buihuuduy.book_rating.DTO.response.CommentResponse;
 import com.buihuuduy.book_rating.entity.CategoryEntity;
 import com.buihuuduy.book_rating.mapper.CategoryMapper;
+import com.buihuuduy.book_rating.repository.BookCategoryRepository;
 import com.buihuuduy.book_rating.repository.BookRepository;
 import com.buihuuduy.book_rating.repository.CategoryRepository;
 import com.buihuuduy.book_rating.service.CategoryService;
@@ -23,14 +24,16 @@ public class CategoryServiceImpl implements CategoryService
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final BookRepository bookRepository;
+    private final BookCategoryRepository bookCategoryRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper, BookRepository bookRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper, BookRepository bookRepository, BookCategoryRepository bookCategoryRepository) {
         this.categoryRepository = categoryRepository;
         this.categoryMapper = categoryMapper;
         this.bookRepository = bookRepository;
+        this.bookCategoryRepository = bookCategoryRepository;
     }
 
     @Override
@@ -71,5 +74,14 @@ public class CategoryServiceImpl implements CategoryService
             categoryChartList.add(categoryChart);
         }
         return categoryChartList;
+    }
+
+    @Override
+    public void deleteCategory(Integer id)
+    {
+        CategoryEntity categoryEntity = categoryRepository.findById(id).orElse(null);
+        bookCategoryRepository.deleteByCategoryId(id);
+        assert categoryEntity != null;
+        categoryRepository.delete(categoryEntity);
     }
 }

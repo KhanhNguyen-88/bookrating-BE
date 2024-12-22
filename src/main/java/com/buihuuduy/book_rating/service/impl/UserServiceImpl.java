@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public List<AccountResponse> getFollowingAccountByUser(Integer userId)
+    public List<AccountResponse> getFollowingAccountByUser(String token, Integer userId)
     {
         List<Integer> listFollowingAccountId = followingAccountRepository.findAllFollowingAccountIdsByYourAccountId(userId);
         List<AccountResponse> accountResponseList = new ArrayList<>();
@@ -76,10 +76,12 @@ public class UserServiceImpl implements UserService
             accountResponse.setUserName(userEntity.getUsername());
             accountResponse.setUserImage(userEntity.getUserImage());
 
+            String username = CommonFunction.getUsernameFromToken(token);
+            UserEntity myAccount = userRepository.findByUsername(username);
 
             accountResponseList.add(accountResponse);
             for (AccountResponse user : accountResponseList){
-                if(introspectFollowBack(user.getUserId(), userId) == 0){
+                if(introspectFollowBack(user.getUserId(), myAccount.getId()) == 0){
                     user.setFollowBack(false);
                 }else {
                     user.setFollowBack(true);
@@ -90,7 +92,7 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public List<AccountResponse> getFollowerAccountByUser(Integer userId)
+    public List<AccountResponse> getFollowerAccountByUser(String token, Integer userId)
     {
         List<Integer> listFollowerAccountId = followingAccountRepository.findAllFollowerAccountIdsByFollowingAccountId(userId);
         List<AccountResponse> accountResponseList = new ArrayList<>();
@@ -104,8 +106,12 @@ public class UserServiceImpl implements UserService
             accountResponse.setUserImage(userEntity.getUserImage());
 
             accountResponseList.add(accountResponse);
+
+            String username = CommonFunction.getUsernameFromToken(token);
+            UserEntity myAccount = userRepository.findByUsername(username);
+
             for (AccountResponse user : accountResponseList){
-                if(introspectFollowBack(user.getUserId(), userId) == 0){
+                if(introspectFollowBack(user.getUserId(), myAccount.getId()) == 0){
                     user.setFollowBack(false);
                 }else {
                     user.setFollowBack(true);
@@ -131,8 +137,8 @@ public class UserServiceImpl implements UserService
         userDetailResponse.setUserName(userEntity.getUsername());
         userDetailResponse.setUserImage(userEntity.getUserImage());
         userDetailResponse.setBookNumberPost(bookRepository.countBookByUsername(userEntity.getUsername()));
-        userDetailResponse.setFollowingAccounts(getFollowingAccountByUser(userId).size());
-        userDetailResponse.setFollowerAccounts(getFollowerAccountByUser(userId).size());
+        userDetailResponse.setFollowingAccounts(getFollowingAccountByUser(token, userId).size());
+        userDetailResponse.setFollowerAccounts(getFollowerAccountByUser(token, userId).size());
         return userDetailResponse;
     }
 
@@ -198,7 +204,7 @@ public class UserServiceImpl implements UserService
         String username = CommonFunction.getUsernameFromToken(token);
         UserEntity userEntity = userRepository.findByUsername(username);
         if(userEntity == null) throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        return getFollowingAccountByUser(userEntity.getId());
+        return getFollowingAccountByUser(token, userEntity.getId());
     }
 
     @Override
@@ -206,7 +212,7 @@ public class UserServiceImpl implements UserService
         String username = CommonFunction.getUsernameFromToken(token);
         UserEntity userEntity = userRepository.findByUsername(username);
         if(userEntity == null) throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        return getFollowerAccountByUser(userEntity.getId());
+        return getFollowerAccountByUser(token, userEntity.getId());
     }
 
     @Override
@@ -220,8 +226,8 @@ public class UserServiceImpl implements UserService
         userDetailResponse.setUserName(userEntity.getUsername());
         userDetailResponse.setUserImage(userEntity.getUserImage());
         userDetailResponse.setBookNumberPost(bookRepository.countBookByUsername(username));
-        userDetailResponse.setFollowingAccounts(getFollowingAccountByUser(userEntity.getId()).size());
-        userDetailResponse.setFollowerAccounts(getFollowerAccountByUser(userEntity.getId()).size());
+        userDetailResponse.setFollowingAccounts(getFollowingAccountByUser(token, userEntity.getId()).size());
+        userDetailResponse.setFollowerAccounts(getFollowerAccountByUser(token, userEntity.getId()).size());
         return userDetailResponse;
     }
 
@@ -241,7 +247,8 @@ public class UserServiceImpl implements UserService
         followingAccountRepository.deleteAll(followingAccountList);
         List<CommentEntity> commentList = commentRepository.findByUserId(userEntity.getId());
         commentRepository.deleteAll(commentList);
-        userRepository.delete(userEntity);
+        userEntity.setIsActive(false);
+        userRepository.save(userEntity);
     }
 
     @Override
