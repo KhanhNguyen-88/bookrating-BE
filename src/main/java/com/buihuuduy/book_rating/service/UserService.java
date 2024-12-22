@@ -18,9 +18,9 @@ public interface UserService
 
     UserInfoResponse getUserInfoByToken(String token);
 
-    List<AccountResponse> getFollowingAccountByUser(Integer userId);
+    List<AccountResponse> getFollowingAccountByUser(String token, Integer userId);
 
-    List<AccountResponse> getFollowerAccountByUser(Integer userId);
+    List<AccountResponse> getFollowerAccountByUser(String token, Integer userId);
 
     UserDetailResponse getUserDetailInfo(String token, Integer userId);
 
