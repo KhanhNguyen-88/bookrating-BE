@@ -75,13 +75,4 @@ public class CategoryServiceImpl implements CategoryService
         }
         return categoryChartList;
     }
-
-    @Override
-    public void deleteCategory(Integer id)
-    {
-        CategoryEntity categoryEntity = categoryRepository.findById(id).orElse(null);
-        bookCategoryRepository.deleteByCategoryId(id);
-        assert categoryEntity != null;
-        categoryRepository.delete(categoryEntity);
-    }
 }
