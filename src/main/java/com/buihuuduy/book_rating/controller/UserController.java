@@ -57,18 +57,20 @@ public class UserController {
     }
 
     @GetMapping("/following-account/{userId}")
-    public ApiResponse<List<AccountResponse>> getFollowingAccountByUser(@PathVariable int userId) {
+    public ApiResponse<List<AccountResponse>> getFollowingAccountByUser(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int userId) {
+        String token = authorizationHeader.substring(7);
         ApiResponse<List<AccountResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
-        apiResponse.setResult(userService.getFollowingAccountByUser(userId));
+        apiResponse.setResult(userService.getFollowingAccountByUser(token, userId));
         return apiResponse;
     }
 
     @GetMapping("/follower-account/{userId}")
-    public ApiResponse<List<AccountResponse>> getFollowerAccountByUser(@PathVariable int userId) {
+    public ApiResponse<List<AccountResponse>> getFollowerAccountByUser(@RequestHeader("Authorization") String authorizationHeader, @PathVariable int userId) {
+        String token = authorizationHeader.substring(7);
         ApiResponse<List<AccountResponse>> apiResponse = new ApiResponse<>();
         apiResponse.setCode(200);
-        apiResponse.setResult(userService.getFollowerAccountByUser(userId));
+        apiResponse.setResult(userService.getFollowerAccountByUser(token, userId));
         return apiResponse;
     }
 
