@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: "jdbc:mysql://localhost:3308/book_rating_db"
+    url: "jdbc:mysql://localhost:3308/book_rating_new"
     username: root
     password: Khanh2003@
   jpa:
@@ -13,8 +13,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: buihuuduy1612@gmail.com
-    password: oinxblxxlqyheerm
+    username: nguyenvankhanhndtt@gmail.com
+    password: rcwqxkzejuvnlxtt
     properties:
       mail:
         smtp:
@@ -26,7 +26,7 @@ jwt:
   signerKey: "K7j0LshncymqxUzj5inOflDE4ooSNfWFxps6VzBhVyGB2HytlsWhywvHE6VYxifs"
 
 minio:
-  url: http://103.216.116.98:9000
-  access-key: WPhfhPM8IQYt6Ibo1uUW
-  secret-key: KYok93vYK56btVdo7G1lz4NFwmt3PaubHQCulZCq
-  bucket-name: book-rating
+  url: http://localhost:9000/
+  access-key: MXhWpgrVLiE077Zc14N0
+  secret-key: fcdpWSCBlc3Em1PRBZYXkTSGvLi849XqrZMBy63j
+  bucket-name: image-book-rate
